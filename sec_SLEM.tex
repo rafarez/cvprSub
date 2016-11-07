@@ -47,7 +47,7 @@ Equation (\ref{omega:solution}) shows how to solve (\ref{eq:first}) simultaneous
 %Replacing the hinge loss by the square loss offers a more compact solution, but not necessarily more efficient.
 
 \textbf{Woodbury identity.} 
-We can modify Equation \ref{omega:solution} by simplifing Equation \ref{eq:U}.
+We can simplify Equation \ref{omega:solution} by modifying $U$ in Equation \ref{eq:U}.
 Let us define $A = \frac{1}{n}XX^T-\mu\mu^T +\lambda\mathrm{Id}_d$ our regularized covariance matrix and assume its inverse $A^{-1}$ known. 
 %$A$ is the covariance matrix of the negative samples $X$\footnote{added of a small term proportional to the identity matrix to insure $A$ is positive-definite.}. Let us assume its inverse $A^{-1}$ is known. 
 The matrix $U$ now reads $U = A + \frac{\theta}{\theta+1}\delta\delta^T$, where $\delta=x_0-\mu$ is the centralized (w.r.t. the negative mean) positive sample. The Woodbury identity \cite{woodbury} gives us
