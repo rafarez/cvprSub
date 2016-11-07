@@ -29,7 +29,7 @@ For the experiment of SLEM as a feature encoder, we tested two different kernels
 \textbf{Gaussian SLEM.} The radial basis function kernel $k_1$ is a
 well known reproducing kernel, used for classification with support vector machines.\\
 \textbf{Poly SLEM.} The polynomial kernel $k_2$ is a reproducing kernel often used in natural language processing.
-%\textbf{SPM SLEM} The spatial pyramid matching kernel of $L+1$ levels in Equation \ref{k:spm} take as input a set of local descriptors and its location in pyramidal bins \cite{spk}. 
+
 
 
 \subsection{Base visual features}
@@ -42,40 +42,6 @@ The first CNN-based features we use consist of the activation coefficients of th
 The Sum-Pooling of Convolutional (SPoC) features \cite{babenko15}, which are tailored specifically for the image retrieval application, consist of spatially-weighted sums of the activations of the last convolutional layer of a 19-layer CNN \cite{SimonZisser15}.
 
 Finally, we use the NetVLAD features \cite{Arandjelovic15}, trained for place recognition. These features are obtained by adding a differentiable version of the VLAD algorithm~\cite{Delhumeau2013} as a layer at the end of a convolutional architecture.
-
-
-%We revisit the VLAD feature presented in \cite{VLAD} as an example of a hand-crafted representation. First we extract a set $\mathcal{F}$ of local descriptors of the image $I$. We use the 128 dimension RootSIFT \cite{3things} descriptors, extracted densely.
-%Then, we hard-assign each descriptor $f$ in $\mathcal{F}$ to the closest among $K$ pre-trained codewords $c_k$, $k\in\{1\cdots K\}$,
-%one of $K$ set $\mathcal{C}_k$ of descriptors associated to codewords $\{c_k\}_{1\leq k\leq K}$, 
-%and map $f$ to a $\RR^{128K}$ vector
-%\begin{equation}
-%\phi^{VL}_1(f) = \left[0 \cdots 0\quad \Phi_k^T\frac{(f-c_k)}{\|f-c_k\|} \quad 0 \cdots 0\right],
-%\end{equation}
-%where $\Phi_k$ is a $128\times 128$ PCA matrix learned on training features mapped to $k$-the codeword.
-%associated to descriptors in $\mathcal{C}_k$. 
-%The final VLAD representation is the power-normalization and $l_2$ normalization of the sum-pooling of $\phi^{VL}_1$:
-%\begin{equation}
-%\phi^{VL}_2(I) \propto \mathrm{power}\big(\sum_{f\in \mathcal{F}}\phi^{VL}_1(f)\big),~\|\phi^{VL}_2(I)\|=1,
-%\end{equation}
-%with scalar power normalization $\mathrm{power}(v)=\mathrm{sign}(v)|v|^{0.2}$ applied component-wise.
-%In experiments, we use $K=64$ codewords learned on images from Flickr. Our VLAD representation has $d=8192$ dimensions.
-
-%Convolutional features obtained from very deep convolutional neural networks (CNNs) have been shown to work as good local descriptors for matching \cite{SimonZisser15}. The SPoC representation \cite{babenko15} is a weighted sum-pooling of the activations of the last convolutional layer of a 19-layer CNN. For a given input image $I$, the activations in this layer are organized over a $W\times H$ spatial grid and over $d$ channels. Each position $(w,h)$ in $\{1 \cdots W\}\times \{1\cdots H\}$ can thus be equipped with a descriptor $f_{h,w}(I)$ in $\RR^D$.
-%Indeed, if our last convolutional layer has $D$ neurons, and each neuron a $W\times H$ map of activations of this neurons to the image $I$, 
-%each pair $(w,h)$ with $w$ in $\{1,2,..., W\}$ and $h$ in $\{1,2,...,H\}$ can be associated to a descriptor $f_{(h,w)}$ in $\RR^D$ of the responses of each neuron at coordinate $(w,h)$ of the maps. 
-%We then sum-pool these descriptors, weighted accordingly to their distance to the center of the image:
-%\begin{equation}
-%    \phi^{SPoC}(I) = \sum_{w=1}^W\sum_{h=1}^H \alpha_{w,h}f_{w,h}(I),
-%\end{equation}
-%where
-%\begin{equation}
-%    \alpha_{w,h} = \exp \left(-\dfrac{(w-W/2)^2+(h-H/2)^2}{2\sigma^2}\right).
-%\end{equation}
-%In our experiments, we follow the implementation details of \cite{babenko15}: We resize all images to $586\times 586$ pixels before feeding them to the network. The last convolutional layer has $d=512$ channels with activation maps of size $(W,H)=(37,37)$, and we set $\sigma=\frac{H}{3}$. We use the same network architecture to extract the convolutional maps but different weights in the convolutional layer, which might explain the difference between the results in Table \ref{fullrank:results} and \cite{babenko15}.
-
-%Finally, we also test a more convencional CNN feature, less deep and using two fully connected layers after the convolutional layers.
-%Our final representation is a $4096$ non-negative feature. We based out implementation on CAFFE \cite{jia2014caffe}.
-
 
 
 \subsection{Image retrieval results}
@@ -106,24 +72,22 @@ We train our exemplar classifiers for between $6000$ and $10000$ negative sample
 %\small
 \begin{tabular}{c@{\hskip 1em}cccc@{\hskip 1em}cccc@{\hskip 1em}cc}%@{\hskip 1em}c}
 \toprule
-Dataset & \multicolumn{4}{c}{\textbf{Holidays}} & \multicolumn{4}{c}{\textbf{Oxford 5k}} & \multicolumn{2}{c}{\textbf{Oxford 105k}} \\%& \textbf{Oxford 105k}\\
+Dataset & \multicolumn{4}{c}{\textbf{Holidays}} & \multicolumn{4}{c}{\textbf{Oxford 5k}} & \multicolumn{2}{c}{\textbf{Oxford 105k}} \\
 \midrule
-Model, features & VLAD  & SPoC & AlexNet & NetVLAD & VLAD & SPoC & AlexNet & NetVLAD & SPoC & NetVLAD\\% & SPoC\\
+Model, features & VLAD  & SPoC & AlexNet & NetVLAD & VLAD & SPoC & AlexNet & NetVLAD & SPoC & NetVLAD\\
 \midrule
-Baseline            & 72.7 & 76.4 & 68.2  &  85.4 & 46.3 & 54.4 & 40.6 & 67.5 & - & - \\% & 50.1\\
+Baseline            & 72.7 & 76.4 & 68.2  &  85.4 & 46.3 & 54.4 & 40.6 & 67.5 & - & - \\
 %Whitening           & -    & -    & -    & -    & -\\
-PCA+whitening       & 69.4 & 81.6 & 69.2 & 88.3  & 50.9  & 63.7 & 45.0 & 69.1 & - & - \\% & 55.5\\
+PCA+whitening       & 69.4 & 81.6 & 69.2 & 88.3  & 50.9  & 63.7 & 45.0 & 69.1 & - & - \\
 LDA                 & -   &   -   &  -   &   -   &   -   &   -  & 40.5 &  -  & - & - \\
-E-SVM               & 77.5 & 84.0 & 71.3 & 90.5 & 57.2  & 62.1 & 43.9 & 70.4(?) & - & - \\% & 56.5\\ netvlad_hol: 91.6
-Linear SLEM         & 78.0   & 82.3 & 72.1 & 90.9& \ul{59.3}  & 64.1 & 46.9/42.2(?) & 72.4 & - & - \\% & 56.7\\
+E-SVM               & 77.5 & 84.0 & 71.3 & 90.5 & 57.2  & 62.1 & 43.9 & 70.4(?) & - & - \\
+Linear SLEM         & 78.0   & 82.3 & 72.1 & 90.9& \ul{59.3}  & 64.1 & 46.9/42.2(?) & 72.4 & - & - \\
 Gaussian SLEM (16)  & - & - & - & 91.1 & - & - & - & 70.8 & - & - \\
 Gaussian SLEM (32)  & - & 82.2 & - & 91.0 & - & - & - & 71.1 & - & - \\
-Gaussian SLEM (fr)  & 78.1 & 85.2 & \ul{72.9} & 91.4 & 59.0   & \ul{64.9} & 47.0 & \bf{73.2} & - & - \\% & 59.5\\
+Gaussian SLEM (fr)  & 78.1 & 85.2 & \ul{72.9} & 91.4 & 59.0   & \ul{64.9} & 47.0 & \bf{73.2} & - & - \\
 Poly SLEM (16)      & - & 82.3 & - & 91.3 & - & 63.6 & - & 71.2 & - & - \\
 Poly SLEM (32)      & - & 82.4 & - & \bf{91.7} & - & 63.6 & - & 71.7 & - & - \\
-Poly SLEM   (fr)    & 78.1 & \ul{86.3}  & \ul{72.9} & \bf{91.7} & \ul{59.3}  & 64.8 & \ul{47.3} & \bf{73.2} & - & - \\% & \bf{62.3}\\
-%Zepeda \textit{et al.} \cite{ZePe15} & \underline{78.3} & - & 71.8 & - & 57.5 & - & 44.6 & - & - \\
-%Babenko \textit{et al.} \cite{babenko15} & - & 81.8 & - & - & - & \textbf{65.7} & - & - & 57.8\\
+Poly SLEM   (fr)    & 78.1 & \ul{86.3}  & \ul{72.9} & \bf{91.7} & \ul{59.3}  & 64.8 & \ul{47.3} & \bf{73.2} & - & - \\
 \hline
 \end{tabular}
 \caption{Mean average precision results for INRIA Holidays and Oxford buildings datasets, expressed as percentages. In this table, we present our results for VLAD \cite{Delhumeau2013}, sum-pooling of convolutional features (SPoC) \cite{babenko15}, activation coefficients from the previous-to-last CNN layer (AlexNet) \cite{Krizhevsky2012} and activation of NetVLAD layer~\cite{Arandjelovic15}. In parenthesis, the rank of he decomposition ('fr' for full rank decomposition)}
