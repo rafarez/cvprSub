@@ -1,0 +1,82 @@
+\documentclass[runningheads]{llncs}
+
+%\usepackage{times}
+%\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{caption}
+%\usepackage{subfigure}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ruler}
+\usepackage{color}
+\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+%\newtheorem{proposition}{Proposition}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NNN}{\mathcal N}
+\newcommand{\sumi}{\displaystyle{\sum_{i=1}^n}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Highlighting
+\usepackage{soul}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\newcommand{\hlc}[2][yellow]{{\sethlcolor{#1}\hl{#2}}}
+\newcommand{\RAF}[1]{\hlc[yellow]{(RR:) #1}}
+\newcommand{\JZ}[1]{\hlc[pink]{(JZ:) #1}}
+\newcommand{\PP}[1]{\hlc[green]{PP: #1}}
+
+\begin{document}
+% \renewcommand\thelinenumber{\color[rgb]{0.2,0.5,0.8}\normalfont\sffamily\scriptsize\arabic{linenumber}\color[rgb]{0,0,0}}
+% \renewcommand\makeLineNumber {\hss\thelinenumber\ \hspace{6mm} \rlap{\hskip\textwidth\ \hspace{6.5mm}\thelinenumber}}
+% \linenumbers
+
+
+\pagestyle{headings}
+\mainmatter
+\def\ECCV16SubNumber{***}  % Insert your submission number here
+
+\title{Kernel Square-Loss Exemplar Machines For Image Retrieval} % Replace with your title
+
+\titlerunning{ECCV-16 submission ID \ECCV16SubNumber}
+
+\authorrunning{ECCV-16 submission ID \ECCV16SubNumber}
+
+\author{Anonymous ECCV submission}
+\institute{Paper ID \ECCV16SubNumber}
+
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+ In this paper, we propose an improvement to the Exemplar SVM (ESVM) feature encoding pipeline first proposed by Zepeda and P\'erez \cite{ZePe15}. We first show that, by replacing the hinge loss by the square-loss in the ESVM cost function, we obtain similar results on image retrieval in a fraction of the execution time. We call this method Square-Loss Exemplar Machine, or SLEM. Secondly, we introduce a kernelized SLEM variant that, while likewise benefitting from reduced complexity relative to ESVM, further results in a performance avantage in image retrieval. Both SLEM variants exploit the fact that only the exemplar image changes in the training set, and hence most of the SLEM computational complexity can be incurred offline by exploiting the Woodbury matrix identity.  We further propose using a Chlolesky low-rank approximation of the kernel matrix to further reduce SLEM complexity \JZ{We present if for the non-linear case, but should work for the linear case too, no?}. Our experiments establish the performance and computational advantages of our methods using a large array of state-of-the-art base feature representations, and well-known image retrieval dataset.
+\end{abstract}
+
+\input{sec_intro.tex}
+
+\input{sec_prior.tex}
+
+\input{sec_SLEM.tex}
+
+\input{sec_kernel_methods.tex}
+
+\input{sec_eff_imp.tex}
+
+\input{sec_eval.tex}
+
+\input{conclusion.tex}
+
+\bibliographystyle{ieee} 
+\bibliography{sup,jz}
+\end{document}
+
+
+	
+%%% Local Variables:
+%%% TeX-master: "main_eccv"
+%%% End:

@@ -1,0 +1,112 @@
+\begin{figure}[!h]
+  \begin{tikzpicture}
+    \begin{groupplot}
+      [group style={%
+        columns=2,
+        rows=1,
+        group name=plots,
+        xlabels at=edge bottom,
+        %y descriptions at=all,
+        horizontal sep=5em,        
+      },
+      % ybar,
+      % ymin=0,
+      % ymax=27e3,
+      enlarge x limits={abs=.5},
+      width=0.5\textwidth,
+      height=0.4\textwidth,
+      % scaled y ticks=base 10:-3,
+      % xticklabels from table={\first}{Criterion},
+      % x tick label style={rotate=90,anchor=east},
+      % xtick=data,
+      ]
+
+      \nextgroupplot[xlabel=rank $r'$,
+      ylabel=mAP]
+      ]
+      %% Poly SLEM
+      \addplot[green] coordinates {
+        (    50,0.815)
+        (   100,0.815)
+        (   195,0.815)
+        (   390,0.815)
+        (   781,0.815)
+        (  1562,0.815)
+        (  3125,0.815)
+        (  6250,0.815)
+        ( 12500,0.815)
+        ( 25000,0.815)
+        ( 50000,0.815)
+        (100000,0.815)
+      };
+      \addplot[mark=x, black] coordinates {
+        (  50, 0.5560)
+         (100, 0.6421)
+        ( 195, 0.6917)
+        ( 390, 0.73043)
+        ( 781, 0.73869)
+        ( 1562,0.76307)
+        ( 3125,0.76986)
+        ( 6250,0.77842)
+        (12500,0.79814)
+        (25000,0.80014)
+        (50000,0.809)
+       (100000,0.815)
+      };
+      
+      \nextgroupplot[
+      ymode=log,
+      xlabel=rank $r'$,
+      ylabel=Time per image (s),
+      legend to name=grouplegend,
+      legend style={legend columns=-1},
+      % legend style={at={(0.465,-0.45)},
+      % anchor=north,legend columns=-1},
+      ]%
+      %% Poly SLEM
+      \addplot[green] coordinates {
+        (    50,9.1)
+        (   100,9.1)
+        (   195,9.1)
+        (   390,9.1)
+        (   781,9.1)
+        (  1562,9.1)
+        (  3125,9.1)
+        (  6250,9.1)
+        ( 12500,9.1)
+        ( 25000,9.1)
+        ( 50000,9.1)
+        (100000,9.1)
+      };
+      \addlegendentry{Full rank}
+      \addplot[mark=x, black] coordinates {
+        (  50, 0.0088)
+         (100, 0.0138)
+        ( 195, 0.0225)
+        ( 390, 0.0508)
+        ( 781, 0.1446)
+        (1562, 0.4762)
+        (3125, 1.717)
+        (6250, 5.317)
+        (12500,18.56)
+        (25000,60.54)
+        (50000,194.2)
+       (100000,598)
+      };
+      \addlegendentry{Low rank}
+      
+    \end{groupplot}
+
+    \node at (plots c1r1.north east) [anchor=south, xshift=2.5em] {\ref{grouplegend}};
+    %\draw (plots c2r1.north west) circle (3pt) node {North west};
+
+  \end{tikzpicture}
+  \caption{Results for INRIA Holidays, using SPoC as base features and PolySLEM. In green, we report full rank results for $n=100000$. In black, we report a low rank approximation for $n=100000$ and rank $r'$ varying axis $x$. On the left, mAP results for each model. On the right, running time per positive image.}
+  \label{full_low}
+\end{figure}
+
+
+
+%% Local Variables:
+%% TeX-master: "main_eccv"
+%% End:

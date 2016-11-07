@@ -1,0 +1,169 @@
+\documentclass[runningheads]{llncs}
+
+%\usepackage{times}
+%\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{caption}
+%\usepackage{subfigure}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ruler}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{mathtools}
+%\usepackage{pgfplots}
+\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+%\newtheorem{proposition}{Proposition}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NNN}{\mathcal X}
+\newcommand{\sumi}{\displaystyle{\sum_{i=1}^n}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Highlighting
+\usepackage{soul}
+\usepackage{color}
+%\usepackage[usenames,dvipsnames]{xcolor}
+\newcommand{\hlc}[2][yellow]{{\sethlcolor{#1}\hl{#2}}}
+\newcommand{\RAF}[1]{\hlc[yellow]{(RR:) #1}}
+\newcommand{\JZ}[1]{\hlc[pink]{(JZ:) #1}}
+\newcommand{\PP}[1]{\hlc[green]{PP: #1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots,pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{grid=major,height=2in, width=\columnwidth}
+\input{tikz_styles.tex}
+
+%\input{test_tikz_data.tex}
+
+\begin{document}
+% \renewcommand\thelinenumber{\color[rgb]{0.2,0.5,0.8}\normalfont\sffamily\scriptsize\arabic{linenumber}\color[rgb]{0,0,0}}
+% \renewcommand\makeLineNumber {\hss\thelinenumber\ \hspace{6mm} \rlap{\hskip\textwidth\ \hspace{6.5mm}\thelinenumber}}
+% \linenumbers
+
+
+\pagestyle{headings}
+\mainmatter
+\def\ECCV16SubNumber{1390}  % Insert your submission number here
+
+\title{Kernel Square-Loss Exemplar Machines\\ For Image Retrieval: Supplementary Material} % Replace with your title
+
+\titlerunning{ECCV-16 submission ID \ECCV16SubNumber}
+
+\authorrunning{ECCV-16 submission ID \ECCV16SubNumber}
+
+\author{Anonymous ECCV submission}
+\institute{Paper ID \ECCV16SubNumber}
+
+
+\maketitle
+%\thispagestyle{empty}
+
+We present here some additional experiments and a discussion of 
+different variants of the approach proposed in our submission.
+
+
+
+\section{Rotation of Holidays' images}
+In our submission, we compare our results to those obtained in the 
+original SPoC paper of Babenko and Lempitsky \cite{babenko15}. We were surprised by not 
+be able to reproduce their results on the Holidays Benchmark: 
+Indeed, \cite{babenko15} reports a mAP of 81.8, but we only managed to obtain a mAP 
+of 77.5 (SPoC+PCA+whitening) in our implementation. Upon careful 
+examination of their paper, this is due in large part to the fact that 
+Babenko and Limpitski manually rotate by 90 degrees some images that are 
+not in their natural orientation to compensate for the fact that CNN 
+features are not rotation invariant \cite{babenko15,babenko14}. Applying the {\em same} 
+rotations to the {\em same} images boosts the performance of our 
+implementation of their method to 81.6 mAP (the 0.2 difference is due to a different set of negative images used to learn the PCA matrix and singular values), and the performance of 
+our full method (Poly SLEM) to a mAP of 86.1, clearly outperforming \cite{babenko15}. 
+Note that, as required by the ECCV submission rules, these results are 
+obtained using the {\em exact same} implementation and parameters as in 
+our original submission, simply rotating the input images as in \cite{babenko15,babenko14}.
+This phenomenon is not observed for the Oxford dataset, where all 
+images appear in their "natural" orientation.
+
+These results, shown in Table \ref{tab}, are comparable to the state of the art for the Holidays dataset which, accordingly to \cite{holidaysSOTA}, is 88.1 for all descriptors and 84.7 for global features such as the SPoC+SLEM. To our knowledge, the state of the art for global features in Holidays is 86.0 is \cite{netVLAD}, which again uses the same rotations as [3] and the additional 
+experiments reported in this section.
+
+\begin{table*}[!h]
+\begin{center}
+\caption{Mean average precision results for INRIA Holidays, expressed as percentages. On the left, results for Holidays dataset as presented in our submission. On the right, results for Holidays dataset with images on their natural orientation.}
+\setlength{\tabcolsep}{.2em}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\small
+\begin{tabular}{c@{\hskip 1em}c@{\hskip 1em}c}
+\toprule
+Dataset & \textbf{Holidays} & \textbf{Holidays (rot)}\\
+\midrule
+Model, features  & SPoC & SPoC\\
+\midrule
+Baseline            & 73.1 & 76.4\\
+PCA+whitening       & 77.5 & 81.6 \\
+E-SVM               & 79.9 & 84.6 \\
+Linear SLEM         & 78.3 & 82.3 \\
+Gaussian SLEM       & 81.4 & 84.9 \\
+Poly SLEM           & \underline{82.0} & \textbf{86.1} \\
+Babenko \textit{et al.} \cite{babenko15} & - & 81.8\\
+\hline
+\label{tab}
+\end{tabular}
+\end{center}
+\end{table*}
+
+\section{Low rank decomposition evaluation}
+We present here a more complete evaluation of the low rank decomposition. In this section, we use SPoC features as our base encoding, the polynomial kernel as our kernel function and Holidays dataset (not rotated, for lack of time) images.
+As discussed in our submission, a significantly larger pool does not improve results after $15000$ negative examples. Indeed, for a pool of $100000$ negative examples, we obtain mAP 81.5, compared to 82.0 for $14500$ negative examples.
+In Figure \ref{full_low}, we take a pool of 100000 negative examples and show their results (mAP and computation time) in green. For this same pool of negatives, we evaluate their low rank decomposition implementation of $r'\in\big\{ \lfloor \frac{10^5}{2^t}\rfloor, \ 0\le t\le 11 \big\}$, and shown their results in black.
+
+
+We obtain mAP results close to full rank for small values of rank $r'$, at a fraction of the computation time of the full rank. 
+As $r'$ increases, performance increases, but the computational cost eventually overcomes that of the full-rank method (around $r'=10000$).
+
+It is not clear today whether it is advantageous to use a lower-rank approximation of the kernel or fewer negative samples.
+\input{fig_low_n.tex}
+%\input{fig_low_vs_full.tex}
+%We then compare the low rank results for rank equals $r'$ to a full rank decomposition of a pool of $r'$ negative examples, for very small values of $r'$. What we observe is that a full rank decomposition obtain better retrieval results, even 
+
+\section{More large scale retrieval results}
+In our submission, we compare our large scale results to those obtained in \cite{ZePe15} with recursive ESVM (RESVM-2) in the Oxford 5k benchmark using VLAD-64 as base features. 
+We did not had at the time finished the same experiment for the Holidays dataset, in part due to our results not being superior to those presented in \cite{ZePe15}. 
+We present them in Figure \ref{vlad:holidays}, for multiple kernel SLEMs, ESVM and RESVM-2 presented by \cite{ZePe15}. 
+\input{holidaysDistrac.tex}
+
+
+
+\section{Recursive square loss exemplar machine?} \label{RSLEM}
+One interesting process proposed in \cite{ZePe15} is the recursive exemplar SVM encoding (or RESVM). The proposed idea is to implement the encoding pipeline $k$ times, $k>0$, taking the output of the $(k-1)$-th ESVM pipeline as input of the $k$-th ESVM pipeline. Here, we consider the base features as the output of the of the 0-th ESVM pipeline. 
+Indeed, if write $\omega^\star$ as a function of the positive exemplar $x_0$ and the pool of negative examples $\NNN=\{x_1,x_2,...,x_n\}$\footnote{In our submission, we treated the pool of negatives as a matrix $X$. Exceptionally in this section, we treat the pool as a set in order to facilitate our notation}, \emph{i.e.}, 
+\begin{equation}
+\omega^\star(x_0, \NNN) = \argmin_{\omega\in\RR^d} \left(\theta \ l(1, \omega^Tx_0+\nu^\star) +\dfrac{1}{n}\sum_{x_i\in\NNN}l(1, \omega^Tx_i+\nu^\star)+\dfrac{\lambda}{2}\|\omega\|^2\right),
+\end{equation}
+and we denote the baseline encodings as $\omega^{(0)}=x_0$ and $\NNN^{(0)}=\NNN$,
+the $k$-th recursion of ESVM is given by $\omega^{(k)}(x_0, \NNN) = \omega^\star (\omega^{(k-1)}, \NNN^{(k-1)})$, where $\NNN^{(k)} = \{\omega^\star(z, \NNN^{(k-1)}\setminus \{z\}), \ z\in\NNN^{(k-1)} \}$.
+Note that the application of the $k$-th pipeline depends on the application of the $(k-1)$-th pipeline on the negative examples. In \cite{ZePe15}, this means taking the pool of negatives equals to $\NNN \setminus \{x_i\}$ for each negative example $x_i$. However, for SLEM, it means recalculating the matrix $A$ for each different pool of negative examples. This makes a recursive SLEM much more time costly than a regular SLEM, negating the computational advantages of 
+our approach. Thus, we have not implemented recursive SLEM. One could 
+also imagine keeping the positive example among the negative ones, which 
+would avoid recomputing A at each iteration, but does not make much sense. Indeed, it would mean solving a classification problem where the only positive example is also a negative example.
+
+
+
+\begin{equation}
+    x_0\in \RR^d
+\end{equation}
+%The other alternative is to not exclude the positive example of the pool of negative, \emph{i.e.}, 
+%$\NNN^{(k)} = \{\omega^\star(z, \NNN^{(k-1)}), \ z\in\NNN^{(k-1)} \}$. This avoids the recalculation of matrix $A$, but it means we solve a classification problem where the only positive example is also a negative example for each element in $\NNN$. As a result, in our experiments with recursive SLEM, we obtain a mAP 0.5 percentage points inferior to the regular SLEM results. These results were obtained in Holidays dataset, for Gaussian, linear kernels and $k=2$ recursive encodings.
+
+\bibliographystyle{ieee} 
+\bibliography{sup,jz}
+\end{document}
+
+
+	
+%% Local Variables:
+%% TeX-master: "suppmat"
+%% End:

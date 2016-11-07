@@ -1,0 +1,46 @@
+\begin{figure*}[!t]
+\begin{centering}
+\begin{tikzpicture}
+    \begin{groupplot}
+      [group style={%
+        columns=2,
+        rows=1,
+        group name=plots,
+        xlabels at=edge bottom,
+        %y descriptions at=all,
+        horizontal sep=4em,        
+      },
+      enlarge x limits={abs=.1},
+      width=0.5\textwidth,
+      height=0.4\textwidth,
+      ]
+    \nextgroupplot[xlabel=Decomposition rank.,
+		ylabel=Residue,
+		domain=1:1000]
+        \addplot[blue] table {valB.dat};
+        \addlegendentry{KPCA}
+        \addplot[red] table {valR.dat};
+        \addlegendentry{ICD}
+        \addplot[green] table {valG.dat};
+        \addlegendentry{CCD}
+        
+    \nextgroupplot[xlabel=Decomposition rank.,
+		ylabel=Time in s,
+		domain=1:1000]
+        \addplot[blue] table {lineB.dat};
+        \addplot[red] table {lineR.dat};
+        \addplot[green, mark=*] coordinates{(999, 0.1532)};
+        
+    %\nextgroupplot[xlabel=Decomposition rank,
+	%	ylabel=Time in s,
+	%	domain=1:1000]
+	%	\addplot[blue]\addplot[blue] table {valB.dat};
+    %    \addplot[red] table {valR.dat};
+    %    \addplot[green] table {valG.dat};
+        
+    \end{groupplot}    
+\end{tikzpicture}
+\caption{Comparison between complete Cholesky decomposition (CCD, in green), incomplete Cholesky decomposition (ICD, in red) and kernel PCA (KPCA, in blue), varying the rank of $B$. Left: Residue for each decomposition. Right: Time of calculation. We use SPoC features~\cite{babenko15} of 1000 sample images.}
+\label{fig:residue}
+\end{centering}
+\end{figure*}

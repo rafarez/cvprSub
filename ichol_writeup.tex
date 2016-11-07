@@ -1,0 +1,118 @@
+\documentclass[12pt,letterpaper]{article}
+
+%\usepackage{cvpr}
+%\documentclass[11pt,letterpaper]{article}
+\setlength{\textheight}{8.875in}
+\setlength{\textwidth}{6.875in}
+\setlength{\columnsep}{0.3125in}
+\setlength{\topmargin}{0in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\parindent}{1pc}
+\setlength{\oddsidemargin}{-.304in}
+\setlength{\evensidemargin}{-.304in}
+
+\usepackage{times}
+\usepackage{bbm}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{caption}
+\usepackage{subcaption}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{coro}{Corollary}
+\newtheorem{prop}{Property}
+\newtheorem{definition}{Definition}
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+
+
+
+\def\texte#1{#1}
+
+\begin{document}
+\def\RR{\mathbb{R}}
+\def\PP{\mathbb{P}}
+\def\AA{\mathbb{A}}
+\def\LL{\mathbb{L}}
+\def\SS{\mathbb{S}}
+\def\barr{\bar{\mathbb{R}}}
+\def\mat#1{{\mathcal{#1}}}
+\def\vect#1{\mbox{\boldmath $#1$}}
+\def\PPi{\mbox{\boldmath$\Pi$}}
+\def\squig{\rightsquigarrow}
+%\def\vect#1{#1}
+%\def\mat#1{#1}
+\def\comment#1{{}}
+%\def\qmatrix#1{\left[\begin{array}{l}#1\end{array}\right]}
+\def\qmatrix#1{\left[\begin{matrix}#1\end{matrix}\right]}
+
+\title{Kernel Square-Loss Examplar Machines}
+\author{Rafael Rezende}
+%\date{}
+\maketitle
+
+\section{Incomplete Cholesky decomposition}
+
+In previous write-ups, we wanted to extend a $n\times r$ low-rank decomposition of a $n\times n$ kernel matrix $K$ into a $(n+1)\times (r+1)$ of the matrix 
+\begin{equation}
+K'=\begin{pmatrix}
+K & k_0 \\
+k_0^T & k_{00}
+\end{pmatrix}.
+\end{equation}
+
+We assumed the $(n+1)$-th column of this matrix decomposition $B'$ would be all zero except for the last writing
+\begin{equation}
+B'=\begin{pmatrix}
+B & 0 \\
+v^T & u
+\end{pmatrix},\label{eq:old}
+\end{equation}
+where $B$ is the incomplete Cholesky decomposition (ICD) of $K$.
+However, the pivot algorithm for ICD states $B'$ should be written as
+\begin{equation}
+B'=\begin{pmatrix}
+B & w \\
+v^T & u
+\end{pmatrix},\label{eq:new}
+\end{equation}
+with $u$ in $\RR$, $v$ in $\RR^r$ and $w$ in $\RR^n$. 
+Decomposing $K'\approx B'B'^T$ gives us 
+\begin{align}
+\begin{cases}
+Bv+uw=k_0,\\
+u+||v||^2=k_{00}.\label{syst:comp}
+\end{cases}
+\end{align}
+
+Let $I_n=\{i_1,i_2,...,i_r\}\subset \{1,2,...,n\}$ be the set of pivots of $B$ and $J_n$ be the sorted complement if $I_n$. 
+We add one more sample and we wish to decompose $K'$ in a $(n+1)\times (r+1)$ ICS. 
+For this, we add another pivot, making $I_{n+1} = I_n\cup \{n+1\}$ the set of pivots of $K'$. Following the ICS algorithm gives us a solution to Equation (\ref{syst:comp}) in the form of 
+\begin{align}
+\begin{cases}
+\vspace{3 mm}
+w(I_n) = 0, v = B(I_n,:)^+k_0(I_n),\\
+\vspace{3 mm}
+u = \sqrt{k_{00}-||v||^2},\\
+w(J_n) = \dfrac{1}{u}\left(K_0(J_n)-B(J_n,:)v \right),
+\end{cases}
+\end{align}\label{syst:sol}
+where $B(I,:)$ is the block matrix of $B$ with rows $I$ and all columns.\\
+Equation (\ref{syst:sol}) follows the same solution we had for (\ref{eq:old}), except by the third line. $B'$ from Equations (\ref{eq:old}) and (\ref{eq:new}) do not give same approximation of $K'$.
+
+\section{Real data}
+With the ICS algorithm applied to real data ($4096$ dimensional normalized CNN features from Holidays dataset) for a big enough sample of data $n$, we consistently find $r=4096$, which is smaller than $n$ but not low dimensional. 
+Also, when adding the $(r+1)$-th dimension of $B'$, we find that $||v||=k_{00}$ and $w$ is non defined from Equation (\ref{syst:sol}).
+
+\section{Eliminating negatives from negative encoding}
+
+\end{document}

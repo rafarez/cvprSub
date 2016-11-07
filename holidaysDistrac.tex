@@ -1,0 +1,82 @@
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+	\begin{semilogxaxis}[
+		xlabel=Number of distractors,
+		ylabel=mAP,
+		legend to name=vladholidays,
+        legend style={legend columns=-1}]
+		%legend = south west]
+%%Poly SLEM
+    \addplot[PolySLEM] coordinates{
+        (   0, 0.77958)
+        (1000, 0.77676)
+        (3000, 0.77018)
+        (6000, 0.76609)
+       (10000, 0.76408)
+       (30000, 0.75422)
+       (60000, 0.74716)
+      (100000, 0.73867)
+      (300000, 0.71629)
+      (600000, 0.69856)
+    };
+    \addlegendentry{PolySLEM}
+	\addplot[ESVM] coordinates{
+        (   0, 0.78269)
+        (1000, 0.78112)
+        (3000, 0.77622)
+        (6000, 0.77255)
+       (10000, 0.77002)
+       (30000, 0.75942)
+       (60000, 0.75050)
+      (100000, 0.74132)
+      (300000, 0.72561)
+      (600000, 0.70604)
+    };	
+    \addlegendentry{RESVM-2}
+    \addplot[GaussSLEM] coordinates{
+        (   0, 0.77917)
+        (1000, 0.77907)
+        (3000, 0.76933)
+        (6000, 0.76528)
+       (10000, 0.76327)
+       (30000, 0.75273)
+       (60000, 0.74686)
+      (100000, 0.73825)
+      (300000, 0.72029)
+      (600000, 0.7)
+    };
+    \addlegendentry{GaussSLEM}
+    \addplot[LinSLEM] coordinates{
+        (   0, 0.77966)
+        (1000, 0.76369)
+        (3000, 0.75864)
+        (6000, 0.75391)
+       (10000, 0.74994)
+       (30000, 0.73902)
+       (60000, 0.73228)
+      (100000, 0.72664)
+      (300000, 0.71048)
+      (600000, 0.69126)
+    };
+    \addlegendentry{LinSLEM}
+    \addplot[mark=o, red] coordinates{
+        (   0, 0.77778)
+        (1000, 0.77372)
+        (3000, 0.76578)
+        (6000, 0.76221)
+       (10000, 0.75956)
+       (30000, 0.74938)
+       (60000, 0.7415)
+      (100000, 0.73256)
+      (300000, 0.71456)
+      (600000, 0.69278)
+    };
+    \addlegendentry{ESVM-1}
+	\end{semilogxaxis}
+	\node at (plots c1r1.north east) [anchor=south, xshift=2.8em] {\ref{vladholidays}};
+\end{tikzpicture}
+\caption{mAP for INRIA Holidays using SPoC as base features and PolySLEM, full rank and low rank decompositions.}
+\label{vlad:holidays}
+\end{figure}
+

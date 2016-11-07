@@ -1,0 +1,113 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage{ruler}
+\usepackage{color}
+\usepackage{booktabs}
+%\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NNN}{\mathcal N}
+\newcommand{\sumi}{\displaystyle{\sum_{i=1}^n}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Highlighting
+\usepackage{soul}
+%\usepackage[usenames,dvipsnames]{xcolor}
+\newcommand{\hlc}[2][yellow]{{\sethlcolor{#1}\hl{#2}}}
+\newcommand{\RAF}[1]{\hlc[yellow]{(RR:) #1}}
+\newcommand{\JZ}[1]{\hlc[pink]{(JZ:) #1}}
+\newcommand{\PP}[1]{\hlc[green]{PP: #1}}
+\newcommand{\un}[1]{\underline{#1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots,pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{grid=major,height=2in, width=\columnwidth}
+\input{tikz_styles.tex}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{882} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Kernel Square-Loss Exemplar Machines}
+
+\author{Rafael S. de Rezende\\
+INRIA Paris\\
+Institution1 address\\
+{\tt\small rafael.sampaio_de_rezende@inria.fr}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+
+\maketitle
+%\thispagestyle{empty}
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+This paper proposes a new feature encoding pipeline, based on the success of the exemplar SVM (ESVM) \cite{ZePe15} and linear discriminant analysis (LDA) as whitening \cite{HMR12}.
+We first show that, by replacing the hinge loss by the square loss in the ESVM cost function, similar results in image retrieval can be obtained at a fraction of the computational cost. 
+We call this model square-loss exemplar machine, or SLEM. 
+Secondly, we introduce a kernelized SLEM version which benefits from the same computational advantages but may displays improved performance. 
+Both SLEM variants exploit the fact that the negative examples are fixed for all the positives in the training set, so most of the SLEM computational complexity is relegated to an offline process independent of the positive examples. 
+Our experiments establish the performance and computational advantages of our methods using a large array of base feature representations and standard image retrieval datasets.
+\end{abstract}
+
+\input{sec_intro.tex}
+
+%\input{sec_prior.tex}
+
+\input{sec_SLEM.tex}
+
+\input{sec_kernel_methods.tex}
+
+\input{sec_eff_imp.tex}
+
+\input{sec_eval_raf.tex}
+
+%\input{comp_sota.tex}
+\input{conclusion.tex}
+
+%% RR: uncomment for final version
+%% \subsection*{Acknowledgments} This work was supported by the ERC grant VideoWorld.
+
+{\small
+\bibliographystyle{ieee} 
+\bibliography{sup,jz}
+}
+\end{document}

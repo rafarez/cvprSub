@@ -1,0 +1,194 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proof}{Proof}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NNN}{\mathcal N}
+\newcommand{\sumi}{\displaystyle{\sum_{i=1}^n}}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Square Loss Exemplar Machine as Image Encoding: Applications on Image Retrieval}
+
+\author{Rafael Rezende\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+   In this paper, we propose an improvement of the image encoder based on the exemplar SVM, first proposed bt Zepeda et al.
+   First, we show a more efficient implementation, replacing the hinge loss by the square loss. 
+   We obtain superior results on image search in a fraction of the execution time.
+   Then, we introduce a low-rank kernel trick for exemplar SVM \emph{\color{red} talk about results} 
+\end{abstract}
+
+\input{sec_intro}
+
+\section{Prior work}
+
+\input{sec_SLEM.tex}
+
+\input{sec_kernel_methods.tex}
+
+\input{sec_eff_imp.tex}
+
+\section{Experimental Evaluation}
+\subsection{Databases and evaluation protocol} \label{eval:protocol}
+Our default database in this report will be INRIA \emph{Holidays} database \cite{holidays}. This database consists of 1491 images divided in 500 groups. For the remaining of this report, if the database of an experiment is not mentioned, the experiment is performed on \emph{Holidays}.
+We also perform in the \emph{Oxford} database \cite{oxford}, which consists of 5000 images separated in 55 groups.
+
+Each group of these databases contains one query image. For each query image we rank all the other images in the database based on the similarity between them and the query image, in decreasing order. The average precision of a group is calculated by the ranking of the images of the group for the similarity with the corresponding query image. The final mean average precision (abbreviated for the rest of this report as mAP) for a database is the mean of the average precision over all its groups.
+As negative sample of images, we use a small set of images from Flickr100K \cite{oxford}.
+\subsection{Base Encoding of Images}
+We use three base features as the representation in $\RR^d$ of our images. Firstly, we use VLAD representation, as used in \cite{ZePe15}. 
+CNN features are non-negative and can be used both as $\mathbb{L}^1$ or $\mathbb{L}^2$ normalized features. The third features are spatial pyramids of SIFT descriptors, as used in \cite{spk}. These are non-negative $\mathbb{L}^1$ normalized features. \emph{\color{red} Details of these features construction are not relevant right now.}
+\subsection{Implementation details}
+\emph{\color{red} Not relevant right now.  To be written.}
+$8192$ dimensional VLAD features.
+
+E-SVM: $0.6$ second to solve one single exemplar.
+
+SLEM: $30$ seconds to solve a $8192\times 8192$ linear system for all exemplars of the dataset.
+
+Kernelized SLEM: at most $0.3$ seconds (for RBF kernel) for each iteration of (\ref{icd:algo}) algorithm plus at most $30$ seconds to solve a $r'\times r'$ system.
+
+\subsection{Comparison between SLEM and LDA scores}
+Let us reconsider the non-kernelized SLEM of subsection \ref{SLEM}. In this case, $A = \frac{1}{n}XX^T-\mu\mu^T+\lambda\textbf{Id}_d$ is the covariance matrix of the negative samples $X$\footnote{A small term proportional to the identity matrix is added to insure the covariance matrix is positive-definite.}. After application of Equation (\ref{beta:fromwood}) to obtain $\omega^\star(x_0,X)$, we can calculate the similarity score $s(x_0,x_0')$ between a query image $x_0$ and an other image $x_0'$ as the inner product of its SLEM vectors:
+\begin{equation}
+s(x_0,x_0') = (x_0-\mu)^TA^{-2}(x_0'-\mu).
+\end{equation}
+One interesting fact is that a similar similarity score can be obtained by applying LDA to the positive data. 
+Indeed, $\hat{s}(x_0,x_0') = (x_0-\mu)^TA^{-1}(x_0'-\mu)$ is the similarity score for LDA-transformed vectors $x_0$ and $x_0'$. 
+\cite{Koba15} noticed that $\hat{s}$ corresponds to the similarity score of SLEM vectors if we use the similarity score proposed in \cite{Efros11} to zero-centered data.
+
+In order to compare both scores, we introduce the similarity score 
+\begin{equation}
+s_{\alpha}(x_0,x_0') = (x_0-\mu)^TA^{\alpha}(x_0'-\mu),
+\end{equation}
+and we study how the mAP of \emph{Holidays} evolves when we vary $\alpha$. Notice that $s=s_{-2}$, $\hat{s}=s_{-1}$ and $s_0$ corresponds to zero-centered base features inner product. We also compare both scores to the score obtained by whitening the data (\emph{i.e.}, $\mu$ and $A$ are, respectively, the mean and covariance matrix of the assembled positive and negative data) and by the original base features inner product (\emph{i.e.}, $x_0^Tx_0'$). 
+Performing this test on VLAD and CNN feature, as seen on Figure \ref{salpha:vladcnn}, we observe the mAP plateauing for $\alpha$ in $[-2,-1]$, suggesting there is no real improvement in using non-kernelized SLEM over LDA, or, for that matter, the similarity score of \cite{ZePe15}. (which is the most important contribution of this paper) over the similarity of \cite{Efros11}. \emph{\color{red} I'd need to test with E-SVM scores, but if this is true, Patrick's paper is kind of pointless!}
+On the other hand, the spatial pyramid features improves its results for smaller values of $\alpha$ in $[-4,0]$, as seen on Figure \ref{salpha:pyr}.
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{whitening_cnn.jpg}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{whitening_vlad.jpg}
+\end{subfigure}
+\caption{Comparison of mAP for different similarity scores $s_{\alpha}$, varying $\alpha$. On the top, CNN features. At the bottom, VLAD features. On blue, $A$ is the covariance of the negative samples and on red, $A$ is the covariance of the positive and negative samples. In black, the mAP for similarity calculated as inner product of base features.}
+\label{salpha:vladcnn}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.45\textwidth]{whitening_pyr.jpg}
+\caption{Comparison of mAP for different similarity scores $s_{\alpha}$, varying $\alpha$, for spatial pyramid of SIFT descriptors.}
+\label{salpha:pyr}
+\end{figure}
+
+\begin{table*}[t]
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+Method & $s_0$ & E-SVM \cite{ZePe15} &Linear SLEM & Gaussian SLEM &  Intersection SLEM \\
+\hline\hline
+VLAD-64 & 73.3 & 77.5 & 77.9 & 78.1 & -\\
+Caffe CNN & 69.7 & 71.3 & 72.1 & 72.9 & 70.2\\
+Spatial pyramid & 37.4 & 40.1 & 38.2 & 39.7 & 63.5\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Results. For all but the second column, we used SLEM. The - means the tests can not be performed or was not performed yet.}
+\end{table*}
+\subsection{Which kernel to choose?}
+For all base features, we test non-kernelized SLEM, as well as kernelized SLEM for Gaussian (rbf):
+\begin{align}
+k_{rbf}(x,y) &= \exp\left(-\gamma||x-y||^2\right).%;\\
+%k_{poly}(x,y) &= x^Ty+\gamma(x^Ty)^2.
+\end{align}
+For non-negative $\mathbb{L}^1$ normalized, we also test the intersection kernel: 
+\begin{equation}
+k_{inter}(x,y) = \min(x,y).
+\end{equation}
+For Gaussian kernel, we can cross validate the parameter $\gamma$. Doing so, we obtained $\gamma$ small ($\gamma\sim 0.5$). Small values of $\gamma$ for the Gaussian kernel mean it is close to the linear kernels, and so its mAP results are not significantly better than the non-kernelized version.
+
+Indeed, if we assume the base features are normalized, i.e. $||x||=||y||=1$, the Taylor series of the exponential function gives us
+
+\begin{align}
+k_{rbf}(x,y) &= 1-\gamma||x-y||^2+O(\gamma^2)\\
+&=(1-2\gamma)+2\gamma x^Ty+O(\gamma^2)\\
+&=C_1+C_2k_{lin}(x,y)+O(\gamma^2).\label{rbf:as:lin}
+\end{align}
+
+Equation (\ref{rbf:as:lin}) suggests that for small enough values of $\gamma$, the Gaussian kernel matrix is linearly dependent of the linear kernel matrix. In the context of an image search problem, both kernel matrices give the same result.%\footnote{As explained in section \ref{eval:protocol}, the similarity between positive samples $i$ and $j$ is given by the $j$-th entry of the $i$-th column of the similarity }.
+
+
+For the spatial pyramid of SIFT, the intersection kernel works much better than all the other kernels. Strangely, this kernel doest not seem to alter the results for CNN features.
+
+
+\subsection{Low-rank decomposition evaluation}
+\emph{\color{red}subsection for the two images on the next page. Important for future work.}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.45\textwidth]{None_vs_linear.png}
+\caption{Comparison between no kernel results and linear kernel results. In black, mAP of non kernelized SLEM. In red, mAP for different low-rank decompositions of linear kernel matrix. In this experiment, $r=2^{13}$ and we set $\log_2 r'$ in $\{6, 7,...,13\}$. }
+\label{no.ker.vs.linear1}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.45\textwidth]{rbf_decomposition2.png}
+\caption{Comparison between no kernel results and linear kernel results. In black, mAP of non kernelized SLEM. In red, mAP for different low-rank decompositions of linear kernel matrix. In this experiment, $r=2^{13}$ and we set $\log_2 r'$ in $\{6, 7,...,13\}$. }
+\label{no.ker.vs.linear2}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.45\textwidth]{proj_b_0_2.png}
+\caption{}
+\label{proj}
+\end{figure}
+\bibliographystyle{ieee} 
+\bibliography{sup}
+\end{document}

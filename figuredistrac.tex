@@ -1,0 +1,66 @@
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+	\begin{semilogxaxis}[
+		xlabel=Number of distractors,
+		ylabel=mAP,
+		legend = south west]
+%%Poly SLEM
+    \addplot[PolySLEM] coordinates{
+        (   0, 0.5929)
+        (1000, 0.5918)
+        (3000, 0.5901)
+        (6000, 0.5881)
+       (10000, 0.5864)
+       (30000, 0.5759)
+       (60000, 0.5663)
+      (100000, 0.5598)
+      (300000, 0.5405)
+      (600000, 0.5310)
+    };
+    \addlegendentry{PolySLEM}
+	\addplot[ESVM] coordinates{
+        (   0, 0.5750)
+        (1000, 0.5738)
+        (3000, 0.5728)
+        (6000, 0.5715)
+       (10000, 0.5700)
+       (30000, 0.5620)
+       (60000, 0.5533)
+      (100000, 0.5477)
+      (300000, 0.5276)
+      (600000, 0.5121)
+    };	
+    \addlegendentry{RESVM-2}
+    %\addplot[VLAD] coordinates{
+    %    (   0, 0.463)
+    %    (1000, 0.4611)
+    %    (3000, 0.4585)
+    %    (6000, 0.4558)
+    %   (10000, 0.4534)
+    %   (30000, 0.4443)
+    %   (60000, 0.4372)
+    %  (100000, 0.4322)
+    %  (300000, 0.4170)
+    %  (600000, 0.4050)
+    %};
+    %\addlegendentry{VLAD}
+    \addplot[LinSLEM] coordinates{
+        (   0, 0.5933)
+        (1000, 0.5922)
+        (3000, 0.5904)
+        (6000, 0.5883)
+       (10000, 0.5860)
+       (30000, 0.5751)
+       (60000, 0.5643)
+      (100000, 0.5588)
+      (300000, 0.5385)
+      (600000, 0.5260)
+    };
+    \addlegendentry{LinSLEM}
+	\end{semilogxaxis}
+\end{tikzpicture}
+\caption{mAP for Oxford 5k varying the number of distractors, using VLAD features and different methods of SLEM (see legend).}
+\label{vlad:oxford}
+\end{figure}
+
