@@ -52,7 +52,7 @@ Using this factorization, the kernelized problem can be expressed as
 \min_{\beta\in\RR^r,\nu\in\RR} \left( \dfrac{1}{n}\sumi l(y_i, b_i^T\beta+\nu)+\dfrac{\lambda}{2}\|\beta\|^2\right), \label{beta:first}
 \end{equation}
 where $b_i^T$ denotes the $i$-th row of $B$ and $r$ is the number of columns of $B$. 
-If $(\beta^\star, \nu^\star)$ is the solution Equation (\ref{beta:first}), the corresponding vector $\alpha^\star$ (or, more correctly, \textit{a} corresponding vector of dimension $n\geq r$) 
+If $(\beta^\star, \nu^\star)$ is the solution of (\ref{beta:first}), the corresponding vector $\alpha^\star$ (or, more correctly, \textit{a} corresponding vector of dimension $n\geq r$) 
 can be computed by $\alpha^\star=P\beta^\star$, where $P$ is the pseudoinverse of $B^T$.
 
 Note that Eq. (\ref{beta:first}) allows us to write the kernel learning problem (\ref{ker:aff}) as an instance of Eq. (\ref{eq:first}) by setting $y_i=-1$ for all but one training sample. For our approach, we wish to solve (\ref{beta:first}) for many positive training samples (one at a time) against the same set of negative training samples. In the following subsections, we show how to take advantage of the fixed negative samples to efficiently solve (\ref{beta:first}).
@@ -90,9 +90,10 @@ The following lemma show how the factorization of $K'$ can be derived from the f
 B'=\begin{bmatrix}
 u & v^T\\0 & B
 \end{bmatrix},~
-v = B^\dagger k_0,~ u=\sqrt{k_{00}-||v||^2}.
+v = B^\dagger k_0,~ u=\sqrt{k_{00}-||v||^2},
 \label{eq:lemma1}
 \end{equation}
+where $B^\dagger$ is the pseudoinverse of $B$.
 \end{lemma}\label{lemma1}
 \begin{proof}
 For $B'$ defined by (\ref{eq:lemma1}), we have that
@@ -109,7 +110,7 @@ Indeed, if we suppose $k_0$ does not belong to $\mathcal{B}$, then it can be dec
 %} 
 Hence $v=B^\dagger k_0$ is an exact solution of $Bv=k_0$. The fact that $k_{00}-\|v\|^2$ is non-negative comes from the fact that the Schur complement $K-k_0 k_0^T / k_{00}$ of $k_{00}$ in $K'$ is itself positive semidefinite.
 %\footnote{
-Indeed, since the matrix $k_{00}K-k_0k_0^T=B(k_{00}\mathrm{Id}_r-vv^T$ is also positive semidefinite. Thus $v^T(k_{00}\mathrm{Id}_r-vv^T)v = \|v\|^2(k_{00}-\|v\|^2)\ge 0$. \qedhere
+Indeed, since the matrix $k_{00}K-k_0k_0^T=B(k_{00}\mathrm{Id}_r-vv^T)$ is also positive semidefinite. Thus $v^T(k_{00}\mathrm{Id}_r-vv^T)v = \|v\|^2(k_{00}-\|v\|^2)\ge 0$. \qedhere
 %}
 \end{proof}
 
@@ -121,7 +122,7 @@ With a positive exemplar, Eq. (\ref{beta:first}) now reads
  \dfrac{1}{n}l(1, b_0'^T\beta+\nu) +\dfrac{1}{n}\sumi l(-1,b_i'^T\beta+\nu)
 +\dfrac{\lambda}{2}\|\beta\|^2,\label{beta:final}
 \end{align}
-with $b_i'^T$ being the $(i+1)$-th row of $B'$, $i$ in $\{0,1,...,n\}$. In particular, $b_0'=[u; \ v]$ and, for $i>0$, $b_i'=[0; \ b_i]$. The solution $(\beta^\star,\nu^\star)$ in $\RR^{r+1}\times\RR$ can be computed just as before by Equation (\ref{omega:solution}), replacing $x_0$ by $b_0'$, $\mu$ by $\mu' = \frac{1}{n}\sum_{i=1}^n b_i'$ and $X$ by the $(r+1)\times n$ matrix $Q$ of columns $b_1', b_2',...,b_n'$. $\alpha^\star$ is now calculated as
+with $b_i'^T$ being the $(i+1)$-th row of $B'$, $i$ in $\{0,1,...,n\}$. In particular, $b_0'=[u; \ v]$ and, for $i>0$, $b_i'=[0; \ b_i]$. The solution $(\beta^\star,\nu^\star)$ in $\RR^{r+1}\times\RR$ can be computed just as before by Equation (\ref{omega:solution}), replacing $x_0$ by $b_0'$, $\mu$ by $\mu' = \frac{1}{n}\sum_{i=1}^n b_i'$ and $X$ by the $(r+1)\times n$ matrix $Q$ of columns $b_1', b_2',...,b_n'$. Solution $\alpha^\star$ is now calculated as
 $\alpha^\star=P'\beta^\star$, where $P' = [u^{-1} \ 0^T; -u^{-1}Pv \ P]$ is the pseudoinverse of $B'^T$. 
 %This can be expressed by the linear system
 
@@ -146,7 +147,7 @@ s(h,h') & = \langle h, h'\rangle \\
 \end{split}
 \end{equation}
 
-For a given image whose descriptor is $x_0$, we need to store $x_0$, $\hat{\beta}$ and $v$ to calculate its matching score to whichever other image for SLEM. Each image depends therefore on a vector of $p+2r$ dimensions.
+For a given image whose descriptor is $x_0$, we need to store $x_0$, $\hat{\beta}$ and $v$ to calculate its matching score to whichever other image for SLEM. Each image depends therefore on a vector of $p+2r$ dimensions \PP{Remind what are $p$ and $r$, I lost the former!}.
 
 %%% Local Variables:
 %%% TeX-master: "main_eccv"
