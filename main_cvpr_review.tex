@@ -80,12 +80,15 @@ First line of institution2 address\\
 %\thispagestyle{empty}
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-This paper proposes a new feature encoding pipeline, based on the success of the exemplar SVM (ESVM) \cite{ZePe15} and linear discriminant analysis (LDA) as whitening \cite{HMR12}.
-We first show that, by replacing the hinge loss by the square loss in the ESVM cost function, similar results in image retrieval can be obtained at a fraction of the computational cost. 
+This paper proposes an extension of the exemplar SVM (ESVM) as a novel approach to feature encoding for feature retrieval applications.
+%This paper proposes a new feature encoding pipeline, based on the success of the exemplar SVM (ESVM) \cite{ZePe15} and linear discriminant analysis (LDA) as whitening \cite{HMR12}.
+We first show that, by replacing the hinge-loss by the square-loss in the ESVM cost function, equivalent results in image retrieval can be obtained at a fraction of the computational cost. 
 We call this model square-loss exemplar machine, or SLEM. 
-Secondly, we introduce a kernelized SLEM version which benefits from the same computational advantages but may displays improved performance. 
+We also introduce a kernelized SLEM which can be implemented efficiently through a low-rank matrix decomposition and
+%benefits from the same computational advantages but 
+displays improved performance. 
 Both SLEM variants exploit the fact that the negative examples are fixed for all the positives in the training set, so most of the SLEM computational complexity is relegated to an offline process independent of the positive examples. 
-Our experiments establish the performance and computational advantages of our methods using a large array of base feature representations and standard image retrieval datasets.
+Our experiments establish the performance and computational advantages of our approach using a large array of base feature representations and standard image retrieval datasets.
 \end{abstract}
 
 \input{sec_intro.tex}
