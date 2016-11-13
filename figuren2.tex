@@ -21,7 +21,7 @@
       % xtick=data,
       ]
 
-      \nextgroupplot[xlabel=Num. of negatives $n$.,
+      \nextgroupplot[xlabel=Num. $n$ of negatives,
       ylabel=mAP]
       ]
       %% Poly SLEM
@@ -99,7 +99,7 @@
 
       \nextgroupplot[
       ymode=log,
-      xlabel=Num. of negatives $n$,
+      xlabel=Num. $n$ of negatives,
       ylabel=Time per image (s),
       legend to name=grouplegend,
       legend style={legend columns=-1},
@@ -233,6 +233,6 @@
     %\draw (plots c2r1.north west) circle (3pt) node {North west};
 
   \end{tikzpicture}
-  \caption{Results for INRIA Holidays, using SPoC features and different methods of SLEM (see legend).We use $T=10^5$ iterations for all $n$ to report mAP for ESVM, as suggested by \cite{ZePe15}, but report timings using $T=1.66 n$ and the values reported in Table 1 of \cite{ZePe15}. Left: mAP; Right: computation time in solid line, \emph{online} computational cost on dashed line.}
+  \caption{Results for INRIA Holidays, using SPoC features and different methods of SLEM (see legend). We use $T=10^5$ iterations for all $n$ to report mAP for ESVM, as suggested by \cite{ZePe15}, but report timings using $T=1.66 n$ and the values reported in Table 1 of \cite{ZePe15}. Left: mAP; Right: computation time in solid line, \emph{online} computational cost in dashed line.}
   \label{fullrank:results}
 \end{figure*}
