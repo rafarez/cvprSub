@@ -1,10 +1,10 @@
 \section{Conclusion and future work}
 \label{conclusion}
-In this paper, we address the problem of large scale image retrieval with global image representation. 
+In this paper, we address the problem of image retrieval with global image representation. 
 We contribute to the domain by presenting a simple idea, the kernelized square loss exemplar machine, and its efficient implementation.
-As a result, we obtain significant improvements over the image representations we tested and outperform similar encoders on different datasets and on large scale image search. 
-As future work, we must test our model on state of the art representations and see how it impacts their results.
-The use of other kernel functions is also worth investigating. The polynomial kernel outperforms the Gaussian kernel, even though the Hilbert space obtained from the Gaussian kernel has infinite dimensions and the Hilbert space obtained from the polynomial kernel does not.
-The spatial pyramid kernel can be used to improve representations based on local descriptors and it offers the better boosts when compared with its baseline.
-Many other performing matching kernel are yet to be tested \cite{Tolias13}, and this work introduces a model that we hope can be reproduced for all kernel functions.
+As a result, we obtain significant improvements over the image representations we tested and outperform similar encoders on different datasets. 
+As future work, we must work on a convolutional implementation similar to \cite{Arandjelovic15} so its parameters can be learned in a supervised manner.
+The use of other kernel functions is worth investigating. The polynomial kernel performs similarly to the Gaussian kernel, even though the Hilbert space obtained from the Gaussian kernel has infinite dimensions and the Hilbert space obtained from the polynomial kernel does not. Different kernels such as the spatial pyramid kernel \cite{spk} are an option for baseline feature that are not global descriptors, wich would increase the versatility of our approach.
+%The spatial pyramid kernel can be used to improve representations based on local descriptors and it offers the better boosts when compared with its baseline.
+
 
