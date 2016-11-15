@@ -3,21 +3,20 @@
 
 
 \subsection{Datasets and evaluation protocol} \label{eval:protocol}
-We perform our experiments on three standard datasets for image retrieval: 
+We perform our experiments on three standard datasets for image retrieval:
 \begin{itemize}
-    \item The INRIA \emph{Holidays} dataset \cite{holidays} which consists of 1491 images divided in 500 groups of matching images. We manually rotate by 90 degrees some images that are not in their natural orientation to compensate for the fact that CNN features are not rotation invariant~\cite{babenko14,Arandjelovic15,RaToCh16}.
+    \item The INRIA \emph{Holidays} dataset \cite{holidays}, which consists of 1491 images divided in 500 groups of matching images. We manually rotate by 90 degrees some images that are not in their natural orientation to compensate for the fact that CNN features are not rotation invariant~\cite{Arandjelovic15,babenko14,RaToCh16}
     \item The \emph{Oxford5k} dataset \cite{oxford}, which consists of 5063 images separated in 55 groups of matching images, each group associated to a landmark of Oxford. We use the ``full'' crop, ignoring the region of interest of each image.
     \item The \emph{Oxford105k} dataset \cite{oxford}, a large-scale dataset containing the same images and queries from Oxford5k plus \emph{Flickr100k}, a collection of $10^5$ distractor Flickr images.
 \end{itemize}
-As pool of negative images to build SLEM, we use the Flickr100k for both Holidays and Oxford5k. When training on Oxford105k, we us instead the \emph{Paris} dataset \cite{PhiChIsSiZi08} as negative samples. \PP{Not clear: negatives are not all images from Flicker100k or Paris. $n$ random samples?}
+As pool of negative images to build SLEM, we use the Flickr100k for both Holidays and Oxford5k. When training on Oxford105k, we us instead the \emph{Paris} dataset \cite{PhiChIsSiZi08} as negative samples.
 %In both datasets, each group contains one query image, the other images in the group being the only correct answers to the query.
 %For each query image, we calculate its similarity to all other images in the database and rank them in decreasing order.
 %The average precision of a group is derived from the ranking of the images of the group for the similarity with the corresponding query image.
 %The final mean average precision (mAP) for a dataset is the mean of the average precision over all its groups.
 %As pool of negative images to build SLEM, we use the Flickr100k collection \cite{oxford}, composed of $10^5$ images from Flickr. For a full rank decomposition, we use only a subset of it, containing between 6000 and 15000 images.
 %As stated in section \ref{low-rank} and further discussed in section \ref{time-scale}, a full rank decomposition does not scale well for bigger number of negative samples. For low rank decomposition, we use all 100000 images.
-
-At evaluation time, for a dataset that consists of $p$ images and $q$ query images, we calculate the $p\times q$ \emph{similarity matrix} $S$, where each of its $q$ columns is the matching scores of the query image with all the $p$ images. \hlc{RR: maybe take out this paragraph completely.}
+At evaluation time, for a dataset that consists of $p$ images and $q$ query images, we calculate the $p\times q$ \emph{similarity matrix} $S$, where each of its $q$ columns is the matching scores of the query image with all the $p$ images. 
 
 \begin{table*}[t!]
 \begin{center}
@@ -31,33 +30,39 @@ Dataset & \multicolumn{4}{c}{\textbf{Holidays}} & \multicolumn{4}{c}{\textbf{Oxf
 Model, features & VLAD  & SPoC & AlexNet & NetVLAD & VLAD & SPoC & AlexNet & NetVLAD & SPoC & NetVLAD\\% & SPoC\\
 \midrule
 Baseline            & 72.7 & 76.5 & 68.2  &  85.4 & 46.3 & 54.4 & 40.6 & 67.5 & 50.1 & - \\% & \\
-%Whitening           & -    & -    & -    & -    & -\\
 PCAW                & 75.5 & 81.7 & 69.2 & 88.3 & 50.9  & 63.7 & 45.0 & 69.1 & 55.5 & - \\% & \\
 LDA                 & 54.7 & 82.2 & 64.1 & 74.3 & 29.6  & 62.2 & 42.5 & 72.7 & 52.4 & - \\
-ESVM~\cite{ZePe15}  & $77.5^3$ & $84.0^3$ & 71.3 & $91.4^2$ & 57.2  & 62.1 & 43.9 & 72.5 & 56.5 & - \\% & \\ 
-Linear SLEM         & $78.0^2$ & 82.3 & 72.1 & $91.3^3$ & \ul{59.3}  & 64.1 & 46.2 & 72.9 & 56.7 & - \\% & \\ /42.2
-Gaussian SLEM (16)  & 76.8 & 80.3 & 71.2 & $91.4^2$ & 52.8 & 63.0 & 43.5 & 71.9 & 55.8 & - \\
-Gaussian SLEM (32)  & 77.4 & 81.7 & $72.0^3$ & $91.4^2$ & 54.9 & 63.1 & 44.0 & 71.1 & 56.0 & - \\
-Gaussian SLEM (fr)  & \bf{78.1} & $86.2^2$ & \bf{72.9} & \bf{91.7} & 59.0   & \ul{64.9} & 47.0 & \ul{74.4} & 59.5 & - \\% & \\ 
-Poly SLEM (16)      & 76.9 & 82.3 & 71.4 & $91.3^3$ & 53.0 & 63.6 & 43.6 & 71.4 & 56.1 & - \\
-Poly SLEM (32)      & 77.3 & 82.4 & $72.1^2$ & \bf{91.7} & 54.9 & 63.6 & 44.1 & 71.6 & 56.3 & - \\
-Poly SLEM   (fr)    & \bf{78.1} & \bf{86.3}  & \bf{72.9} & \bf{91.7} & \ul{59.3}  & 64.8 & \ul{47.3} & \ul{74.1} & 62.5 & - \\
+ESVM~\cite{ZePe15}  & 77.5^3 & 84.0^3 & 71.3 & 91.4^2 & 57.2^3 & 62.1 & 43.9 & 72.5 & 56.5 & - \\% & \\ 
+Linear SLEM         & 78.0^2 & 82.3 & 72.1 & 91.3^3 & \bf{59.3}  & 64.1^3 & 46.2^3 & 72.9^3 & 56.7^3 & - \\% & \\ /42.2
+Gaussian SLEM (16)  & 76.8 & 80.3 & 71.2 & 91.4^2 & 52.8 & 63.0 & 43.5 & 71.9 & 55.8 & - \\
+Gaussian SLEM (32)  & 77.4 & 81.7 & 72.0^3 & 91.4^2 & 54.9 & 63.1 & 44.0 & 71.1 & 56.0 & - \\
+Gaussian SLEM (fr)  & \bf{78.1} & 86.2^2 & \bf{72.9} & \bf{91.7} & 59.0^2 & \bf{64.9} & 47.0^2 & \bf{74.4} & 59.5^2 & - \\% & \\ 
+Poly SLEM (16)      & 76.9 & 82.3 & 71.4 & 91.3^3 & 53.0 & 63.6 & 43.6 & 71.4 & 56.1 & - \\
+Poly SLEM (32)      & 77.3 & 82.4 & 72.1^2 & \bf{91.7} & 54.9 & 63.6 & 44.1 & 71.6 & 56.3 & - \\
+Poly SLEM   (fr)    & \bf{78.1} & \bf{86.3}  & \bf{72.9} & \bf{91.7} & \bf{59.3}  & 64.8^2 & \bf{47.3} & 74.1^2 & \bf{62.5} & - \\
 \hline
 \end{tabular}
-\caption{Mean average precision results for INRIA Holidays and Oxford buildings datasets, expressed as percentages. In this table, we present our results for VLAD \cite{Delhumeau2013}, sum-pooling of convolutional features (SPoC) \cite{babenko15}, activation coefficients from the previous-to-last CNN layer (AlexNet) \cite{Krizhevsky2012} and activation of NetVLAD layer~\cite{Arandjelovic15}. In parenthesis, the rank of he decomposition (`fr' for full rank decomposition) \PP{meaning of bold and underline}}
+\caption{Mean average precision results for INRIA Holidays and Oxford buildings datasets, expressed as percentages. In this table, we present our results for VLAD \cite{Delhumeau2013}, sum-pooling of convolutional features (SPoC) \cite{babenko15}, activation coefficients from the previous-to-last CNN layer (AlexNet) \cite{Krizhevsky2012} and activation of NetVLAD layer~\cite{Arandjelovic15}. In parenthesis, the rank of he decomposition ('fr' for full rank decomposition). For each column, we \textbf{bold} the best results and index the second and third best.}
 \label{fullrank}
 \end{center}
 \end{table*}
 
 \subsection{Which kernel to choose?}
-For the experiment of SLEM as a feature encoder, we tested two different kernels -- Gaussian and polynomial -- each with a scalar parameter $\gamma$:
+We have tested two different kernels, each with a scalar parameter $\gamma$:
+%For the experiment of SLEM as a feature encoder, we tested two different kernels -- Gaussian and polynomial -- each with a scalar parameter $\gamma$:
 \begin{align}
     k_1(x,y) = e^{-\gamma\|x-y \|^2}; \ 
     k_2(x,y) = x^Ty+\gamma(x^Ty)^2. \label{kernels}
 \end{align}
 \textbf{Gaussian SLEM.} The radial basis function kernel $k_1$ is a
 well known reproducing kernel, used for classification with support vector machines.\\
+\begin{align}
+    k_1(x,y) = e^{-\gamma\|x-y \|^2};
+\end{align}
 \textbf{Poly SLEM.} The polynomial kernel $k_2$ is a reproducing kernel often used in natural language processing.\\
+\begin{align}
+    k_2(x,y) = x^Ty+\gamma(x^Ty)^2.
+\end{align}
 %Note the non-kernel version of SLEM is equivalent to a SLEM for the linear kernel. In order to distinguish it from other versions, we will refer to the non-kernel version as \textbf{Linear SLEM} for the remaining of this paper.
 %\textbf{SPM SLEM} The spatial pyramid matching kernel of $L+1$ levels in Equation \ref{k:spm} take as input a set of local descriptors and its location in pyramidal bins \cite{spk}. 
 
@@ -67,7 +72,7 @@ We test our feature encoder for four different base features: the hand-crafted V
 
 We use the same VLAD variant of \cite{Delhumeau2013} used in \cite{ZePe15} that relies on densely-extracted rootSIFT \cite{3things} local descriptors, per-cluster normalization, PCA-based rotations, and root normalization. Like \cite{ZePe15}, we use $64$ clusters, for a final feature of size $8192$.
 
-The first CNN-based features we use consist of the activation coefficients of the previous-to-last layer of the AlexNet architecture \cite{Krizhevsky2012}, based on a publicly available pre-trained model \cite{jia2014caffe}. These are also the features used in \cite{ZePe15}.
+The first CNN features we use consist of the activation coefficients of the previous-to-last layer of the AlexNet architecture \cite{Krizhevsky2012}, based on a publicly available pre-trained model \cite{jia2014caffe}. These are also the features used in \cite{ZePe15}.
 
 The SPoC features \cite{babenko15}, which are tailored specifically for the image retrieval application, consist of spatially-weighted sums of the activations of the last convolutional layer of a 19-layer CNN \cite{SimonZisser15}.
 
@@ -109,14 +114,14 @@ Finally, we use the NetVLAD features \cite{Arandjelovic15}, trained for place re
 
 
 \subsection{Image retrieval results}
-We use the base features of the previous subsection as baseline. Since Babenko \etal~\cite{babenko15} and Arandjelovi\'c \etal~\cite{Arandjelovic15} have improved retrieval results by applying PCA followed by whitening to their features, we also apply this post-processing to our base features as second baseline (PCAW), compressing base feature dimension to half of the original. We then compare the baselines with the original ESVM, LDA and several variants of our approach (SLEM), since all the those methods are based on similar \hlc{??? (I can't read the last word you wrote.} The results are presented in Table \ref{fullrank}. \PP{Explain why fewer columns for Oxford105k}
+We use the base features of the previous subsection as baseline. Since Babenko and Lemptisky~\cite{babenko15} and Arandjelovi\'c \etal~\cite{Arandjelovic15} have improved retrieval results by applying PCA followed by whitening to their features, we also apply this post-processing to our base features as a second baseline (PCAW), compressing base feature dimension to half of the original. We then compare the baselines with the original ESVM, LDA and several variants of our approach (SLEM), since all the those methods are based on similar ideas. The results are presented in Table \ref{fullrank}. For the large-scale dataset that is Oxford105k, we limit our experiments to our best performing base features, SPoC and NetVLAD.
 
-Linear SLEM performs similarly to ESVM despite being much more time efficient (see discussion in Section \ref{time-scale}). 
-The fact that a hinge loss classifier does not outperform a square loss classifier can seem counter-intuitive, but both were shown to be equivalent for binary classification under mild constraints~\cite{YeXi07}.
+Linear SLEM performs similarly to ESVM despite being much more time efficient (Fig. \ref{fullrank:results}). 
+The fact that a hinge-loss classifier does not outperform a square-loss classifier can seem counter-intuitive, but both have been shown to be equivalent for binary classification under mild constraints~\cite{YeXi07}.
 
-We perform both Gaussian SLEM and Polynomial SLEM with two decompositions: one full-rank CCD decomposition signaled by ``(fr)'' and two low-rank KPCA decompositions signaled by the rank of the decomposition. We train our exemplar classifiers for between $6000$ and $15000$ negative samplers. For all the experiments we calibrate the regularization cost $\lambda$, as well as the parameter $\gamma$. 
+We use both Gaussian SLEM and Polynomial SLEM with two decompositions: one full-rank CCD decomposition indicated by (fr) and two low-rank KPCA decompositions indicated by the rank of the decomposition. We train our exemplar classifiers for between $6000$ and $15000$ negative samplers. For all the experiments we calibrate the regularization cost $\lambda$, as well as the parameter $\gamma$ similarly to the calibration in~\cite{ZePe15}.
 
-The full-rank variant outperforms all methods for all base features, although the gains when compared to linear SLEM are not always significant (\emph{e.g.} for VLAD features). It is interesting to notice that LDA, ESVM and Linear SLEM do not seem to outperform one another or the baselines consistently for all features and datasets.
+The full-rank variant outperform all methods for all base features, although the gains when compared to linear SLEM are not always significant (\emph{e.g.} for VLAD features). We notice significant improvement for SPoC in both Holidays and Oxford and for AlexNet and NetVLAD in Oxford. It is interesting to notice that LDA, ESVM and Linear SLEM do not seem to outperform one another or the baselines consistently for all features and datasets.
 %For VLAD and AlexNet, we considere the version presented in~\cite{ZePe15} as \textit{Baseline} and a rotated, whitened and compressed to half its original dimensions as \textit{PCA+whitening}. 
 %As for the version of each feature to which we apply the other algorithms, it changes according to the dataset. 
 %For SPoC, we apply LDA, ESVM and SLEM to the baseline, as a replacement of PCA. 
@@ -135,14 +140,14 @@ The full-rank variant outperforms all methods for all base features, although th
 
 
 \subsection{Time and storage scalability} \label{time-scale}
-In this section we compare the time efficiency of our method and the ESVM, as well as discuss which method and decomposition to use accordingly with the number of positive and negative samples.
+In this section we compare the time efficiency of our method and the E-SVM, as well as discuss which method and decomposition to use accordingly with the number of positive and negative samples.
 
-In Fig. \ref{fullrank:results}, we see that the Linear SLEM efficiency does not change with $n$.
+In Fig. \ref{fullrank:results}, we see that the see Linear SLEM efficiency does not change with $n$.
 Indeed, if $d$ is the dimension of the base representation, $A$ is a $d\times d$ matrix for linear SLEM, whereas for a full rank kernel, $A$ is $n\times n$.
 This explains the increasing running time for Gaussian and polynomial kernels: storage and solving a $n\times n$ system does not scale for large number of negative samples.
 
 Retrieval results for full-rank kernelized SLEM in Fig. \ref{fullrank:results} suggest we can benefit from larger sets of negative samples. We however limit our full-rank experiments to 15000 negatives samples due to the $O(n^3)$ complexity of the offline step.
-When we consider only the online procedure of our model, \emph{i.e.} the calculation of $\beta^\star$, our kernelized model has a similar time-efficiency to ESVM. Therefore, we can process the kernel SLEM for the Gaussian and polynomial kernels with similar running time to ESVM if we pre-process our negative samples offline.
+When we consider only the online procedure of our model, \emph{i.e.} the calculation of $\beta^\star$, our kernelized model has a similar time-efficiency to ESVM. Therefore, we can process the kernel SLEM for the Gaussian and polynomial kernel similar running time to ESVM if we pre-process our negative samples offline.
 
 For the low-rank decomposition, we present in Fig. \ref{kpca:icd} a comparison in average precision between KPCA and ICD decompositions using SPoC on the Holidays dataset. The superior results justify our preference for KPCA, despite its time-inefficient offline step. The only advantage of ICD over KPCA is its time complexity, linear in the number of negative samples, that allows a bigger number of negative samples. In Fig. \ref{icd} we show results of ICD for bigger pools of negative samples. The results suggest that performance of low-rank SLEM is not sensible to the number of negative samples.
 
@@ -154,43 +159,43 @@ For the low-rank decomposition, we present in Fig. \ref{kpca:icd} a comparison i
 
 
 \subsection{Comparation to the state of the art}
-We compare our results to the state of the art for Holidays and Oxford 5k in Table ~\ref{sota}.  We do not include re-ranking nor query expansion. We compare the state of the art global descriptors to both SPoC and NetVLAD features improved by Linear SLEM and low-rank Poly SLEM for rank equals to 16 and 32. We perform PCA and whitening to reduce the dimension of both descriptors to 256 and 512, and compare results by bracket of dimension. We also add a bracket of the full 4096-dimension NetVLAD for completeness, so we include our best performance. Our approach outperforms the state of the art for Holidays, despite not using descriptors as base feature. \PP{A word on Ox5k, where we are far behind Gordo? Something special about this dataset?}
+We compare our results to the state of the art for Holidays and Oxford 5k in Table ~\ref{sota}.  We do not include re-ranking nor query expansion. We compare the state of the art global descriptors to both SPoC and NetVLAD features improved by Linear SLEM and low-rank Poly SLEM for rank equals to 16 and 32. We perform PCA and whitening to reduce the dimension of both descriptors to 256 and 512, and compare results by bracket of dimension. We also add a bracket of the full 4096-dimension NetVLAD for completeness, so we include our best performance. Our approach outperforms the state of the art for Holidays, despite not using descriptors as base feature.
 
 \begin{table}[t]
 \begin{center}
 \setlength{\tabcolsep}{.2em}
 \small
-\begin{tabular}{l|c|ll}
+\begin{tabular}{l|c|c|ll}
 \toprule
-Features & dim & \textbf{Hol.} & \textbf{Ox5k} \\%& \textbf{Oxford 105k}\\
+Features & rank & dim & \textbf{Hol.} & \textbf{Ox5k} \\%& \textbf{Oxford 105k}\\
 \midrule
-Babenko \textit{et al.}\cite{babenko15}  & 256 & 80.2 & 58.9 \\ %& 57.8\\
-Radenovi\'c \textit{et al.} \cite{RaToCh16}   & 256 & 81.5 & \un{77.4} \\
-Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15}& 256 & 86.0 & 62.5 \\ %& - \\
-Kalantidis  \textit{et al.} \cite{KaMeOs16}   & 256 & 83.1 & 65.4 \\
-SPoC + Linear SLEM & 256 & 81.5 & 64.7 \\
-SPoC + Poly SLEM & 288 & 80.1 & 63.6 \\
-SPoC + Poly SLEM & 320 & 81.8 & 63.6 \\
-NetVLAD + Linear SLEM & 256 & \un{88.5} & 65.9 \\
-NetVLAD + Poly SLEM & 288 & 87.7 & 65.5 \\
-NetVLAD + Poly SLEM & 320 & 88.3 & 65.6 \\
+Babenko \textit{et al.}\cite{babenko15}         & - & 256 & 80.2 & 58.9 \\ 
+Radenovi\'c \textit{et al.} \cite{RaToCh16} & - & 256 & 81.5 & \un{77.4} \\
+Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15} & - & 256 & 86.0 & 62.5 \\ 
+Kalantidis  \textit{et al.} \cite{KaMeOs16}   & - & 256 & 83.1 & 65.4 \\
+SPoC + Linear SLEM & - & 256 & 81.5 & 64.7 \\
+SPoC + Poly SLEM & 16 & 288 & 80.1 & 63.6 \\
+SPoC + Poly SLEM & 32 & 320 & 81.8 & 63.6 \\
+NetVLAD + Linear SLEM & - & 256 & \un{88.5} & 65.9 \\
+NetVLAD + Poly SLEM & 16 & 288 & 87.7 & 65.5 \\
+NetVLAD + Poly SLEM & 32 & 320 & 88.3 & 65.6 \\
 \midrule
-Radenovi\'c \textit{et al.} \cite{RaToCh16}   & 512 & 82.5 & 79.7 \\
-Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15}& 512 & 86.7 & 65.6 \\
-Kalantidis \textit{et al.} \cite{KaMeOs16}   & 512 & 84.9 & 68.2 \\
-Gordo \textit{et al.} \cite{GoAlReLa16} & 512 & 89.1^{\dag} & \bf{83.1}^{\dag} \\
-SPoC + Linear SLEM & 512 & 82.3 & 64.1 \\
-SPoC + Poly SLEM & 544 & 82.3 & 63.0 \\
-SPoC + Poly SLEM & 576 & 82.4 & 63.1 \\
-NetVLAD + Linear SLEM & 512 & 89.3 & 72.3 \\
-NetVLAD + Poly SLEM & 544 & \un{89.9} & 71.9 \\
-NetVLAD + Poly SLEM & 576 & \un{89.9} & 72.3 \\
+Radenovi\'c \textit{et al.} \cite{RaToCh16}   & - & 512 & 82.5 & 79.7 \\
+Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15}& - & 512 & 86.7 & 65.6 \\
+Kalantidis \textit{et al.} \cite{KaMeOs16}   & - & 512 & 84.9 & 68.2 \\
+Gordo \textit{et al.} \cite{GoAlReLa16} & - & 512 & 89.1^{\dag} & \bf{83.1}^{\dag} \\
+SPoC + Linear SLEM & - & 512 & 82.3 & 64.1 \\
+SPoC + Poly SLEM   & 16 & 544 & 82.3 & 63.0 \\
+SPoC + Poly SLEM   & 32 & 576 & 82.4 & 63.1 \\
+NetVLAD + Linear SLEM & - & 512 & 89.3 & 72.3 \\
+NetVLAD + Poly SLEM & 16 & 544 & \un{89.9} & 71.9 \\
+NetVLAD + Poly SLEM & 32 & 576 & \un{89.9} & 72.3 \\
 \midrule
-Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15}& 4096 & 88.3 & 69.1 \\
+Arandjelovi\'c \textit{et al.} \cite{Arandjelovic15}& - & 4096 & 88.3 & 69.1 \\
 %Li \textit{et al.} \cite{LiLaHa15}& - & 89.2^{\dag} & 73.7 \\
-NetVLAD + Linear SLEM & 4096 & 91.3 & 72.9 \\
-NetVLAD + Poly SLEM & 4128 & 91.3 & 71.2 \\
-NetVLAD + Poly SLEM & 4160 & \bf{91.7} & 71.7 \\
+NetVLAD + Linear SLEM & - & 4096 & 91.3 & 72.9 \\
+NetVLAD + Poly SLEM & 16 & 4128 & 91.3 & 71.2 \\
+NetVLAD + Poly SLEM & 32 & 4160 & \bf{91.7} & 71.7 \\
 %Zepeda \textit{et al.} \cite{ZePe15} & \underline{78.3} & - & 71.8 & - & 57.5 & - & 44.6 & - & - \\
 %Babenko \textit{et al.} \cite{babenko15} & - & 81.8 & - & - & - & \textbf{65.7} & - & - & 57.8\\
 \hline 

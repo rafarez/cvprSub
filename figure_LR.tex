@@ -17,19 +17,20 @@
     \nextgroupplot[xlabel=Decomposition rank.,
 		ylabel=Residue,
 		domain=1:1000]
-        \addplot[blue] table {valB.dat};
+        \addplot[blue] table {valB_15000.dat};
         \addlegendentry{KPCA}
-        \addplot[red] table {valR.dat};
+        \addplot[red] table {valR_15000.dat};
         \addlegendentry{ICD}
-        \addplot[green] table {valG.dat};
+        \addplot[green] table {valG_15000.dat};
         \addlegendentry{CCD}
         
-    \nextgroupplot[xlabel=Decomposition rank.,
+    \nextgroupplot[ymode = log,
+        xlabel=Decomposition rank.,
 		ylabel=Time in s,
 		domain=1:1000]
-        \addplot[blue] table {lineB.dat};
-        \addplot[red] table {lineR.dat};
-        \addplot[green, mark=*] coordinates{(999, 0.1532)};
+        \addplot[blue] table {lineB_15000.dat};
+        \addplot[red] table {lineR_15000.dat};
+        \addplot[green, mark=*] coordinates{(14999, 13.2714)};
         
     %\nextgroupplot[xlabel=Decomposition rank,
 	%	ylabel=Time in s,
@@ -40,7 +41,7 @@
         
     \end{groupplot}    
 \end{tikzpicture}
-\caption{Comparison between complete Cholesky decomposition (CCD, in green), incomplete Cholesky decomposition (ICD, in red) and kernel PCA (KPCA, in blue), varying the rank of $B$. Left: Residue for each decomposition. Right: Time of calculation. We use SPoC features~\cite{babenko15} of 1000 sample images. \PP{Not clear why CCD is not only one point at 0 in left graph, like in right one}}
+\caption{Comparison between complete Cholesky decomposition (CCD, in green), incomplete Cholesky decomposition (ICD, in red) and kernel PCA (KPCA, in blue), varying the rank of $B$. Left: Residue for each decomposition. Right: Time of calculation. We use SPoC features~\cite{babenko15} of 15000 sample images.}
 \label{fig:residue}
 \end{centering}
 \end{figure*}

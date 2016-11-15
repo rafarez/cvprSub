@@ -34,6 +34,7 @@
 \newcommand{\JZ}[1]{\hlc[pink]{(JZ:) #1}}
 \newcommand{\PP}[1]{\hlc[green]{PP: #1}}
 \newcommand{\un}[1]{\underline{#1}}
+\def\dul#1{\underline{\underline{#1}}}
 
 \usepackage{tikz}
 \usepackage{pgfplots,pgfplotstable}
@@ -58,7 +59,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Kernel Square Loss Exemplar Machines}
+\title{Kernel Square-Loss Exemplar Machines}
 
 \author{Rafael S. de Rezende\\
 INRIA Paris\\
@@ -80,16 +81,20 @@ First line of institution2 address\\
 %\thispagestyle{empty}
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-This paper proposes an extension of the exemplar SVM (ESVM) as a novel approach to feature encoding for retrieval applications.
+Zepeda and P\'erez \cite{ZePe15} have recently demonstrated the promise of the exemplar SVM (ESVM) as a feature encoder for image retrieval. This paper extends this approach in several directions:
+%This paper proposes an extension of the exemplar SVM (ESVM) as a novel approach to feature encoding for feature retrieval applications.
 %This paper proposes a new feature encoding pipeline, based on the success of the exemplar SVM (ESVM) \cite{ZePe15} and linear discriminant analysis (LDA) as whitening \cite{HMR12}.
-We first show that, by replacing the hinge loss by the square loss in the ESVM cost function, equivalent results in image retrieval can be obtained at a fraction of the computational cost. 
-We call this model square loss exemplar machine, or SLEM. 
-We also introduce a kernelized SLEM which can be implemented efficiently through a low-rank matrix decomposition and
+We first show that replacing the hinge loss by the square-loss in the ESVM cost function significantly reduces encoding time with negligible effect on
+accuracy.
+%equivalent results in image retrieval can be obtained at a fraction of the computational cost. 
+We call this model square-loss exemplar machine, or SLEM. 
+We then introduce a kernelized SLEM which can be implemented efficiently through a low-rank matrix decomposition and
 %benefits from the same computational advantages but 
 displays improved performance. 
 Both SLEM variants exploit the fact that the negative examples are fixed for all the positives in the training set, so most of the SLEM computational complexity is relegated to an offline process independent of the positive examples. 
-Our experiments establish the performance \PP{could be a stronger comment, w.r.t. SoA?} and computational advantages of our approach using a large array of base feature representations and standard image retrieval datasets.
+Our experiments establish the performance and computational advantages of our approach using a large array of base feature representations and standard image retrieval datasets.
 \end{abstract}
+
 
 \input{sec_intro.tex}
 
@@ -108,7 +113,7 @@ Our experiments establish the performance \PP{could be a stronger comment, w.r.t
 
 %% RR: uncomment for final version
 %% \subsection*{Acknowledgments} This work was supported by the ERC grant VideoWorld.
-\PP{Refs. [12] and [17] seem incomplete}
+%\newpage
 {\small
 \bibliographystyle{ieee} 
 \bibliography{sup,jz}

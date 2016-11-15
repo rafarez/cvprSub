@@ -1,4 +1,4 @@
-\section{Square loss exemplar machine}\label{lsesvm}
+\section{The square-loss exemplar machine}\label{lsesvm}
 In this section, we revisit the exemplar SVM model proposed in \cite{Efros11} as an instance of a more general family of classifiers. Then, we introduce the square loss exemplar machine (SLEM) by solving a simple variant of this model and study its properties.
 \subsection{Exemplar classifiers} \label{esvm}
 We are given base features in $\RR^d$ at training time, one positive example $x_0$ in $\RR^d$ and a set of negative examples $X = [x_1, x_2,...,x_n]$ in $\RR^{d\times n}$, each column of $X$ representing one example by a vector in $\RR^d$. 
@@ -12,7 +12,7 @@ w.r.t. $\omega$ in $\RR^d$ and $\nu$ in $\RR$. In Eq. (\ref{eq:first}), $\lambda
 
 Given a cost $l$, we define the correspondent \emph{exemplar classifiers} of $x_0$ with respect to $X$ are the weights $\omega^\star(x_0,X)$ that minimizes the loss function $J$:
 \begin{equation}
-\big(\omega^\star, \nu^\star\big) = \underset{(\omega,\nu)\in\RR^d\times\RR}{\argmin} \ J(\omega, \nu). \footnote{Depending on the loss function $l$, $\nu^\star(x_0,X)$ may be not unique. \PP{But, what about $w^{\star}$?}}
+\big(\omega^\star, \nu^\star\big) = \underset{(\omega,\nu)\in\RR^d\times\RR}{\argmin} \ J(\omega, \nu). \footnote{Depending on the loss function $l$, $\nu^\star(x_0,X)$ may be not unique.}
 %\big(\omega^\star(x_0, X), \nu^\star(x_0, X)\big) = \underset{(\omega,\nu)\in\RR^d\times\RR}{\argmin} \ J(\omega, \nu). 
 \label{omega:first}
 \end{equation}
@@ -21,10 +21,10 @@ Given a cost $l$, we define the correspondent \emph{exemplar classifiers} of $x_
 %\cite{Efros11} introduced ensembles of exemplar classifiers for object detection, but single exemplar classifiers have been used as replacement of the original feature $x_0$ for image classification and retrieval \cite{ZePe15} and detection \cite{GMPD12}. \RAF{Maybe this should be in the introduction instead.}
 The exemplar SVM~\cite{Efros11,Efros12} is an instance of this model where $l$ is the hinge loss. 
 %Applications of ESVM use the hinge loss function, which guarantees that $J$ is a convex function. 
-The solution of (\ref{omega:first}) can be thus found by stochastic gradient descent~\cite{bottou10} individually for each positive sample. The next subsection show how to calculate all exemplar classifiers simultaneously by changing the loss function.
+The solution of Eq. (\ref{omega:first}) can thus be found by stochastic gradient descent~\cite{bottou10} individually for each positive sample. The next section shows how to calculate all exemplar classifiers simultaneously by changing the loss function.
 
-\subsection{Square loss function}\label{slem:intro}
-Now, let us study the same learning problem for the square loss function $l(y,\hat{y}) = \frac{1}{2}(y-\hat{y})^2$. As in the case of the hinge loss, Equation (\ref{eq:first}) is a convex problem. 
+\subsection{The square-loss}\label{slem:intro}
+Now, let us study the same learning problem for the square-loss function $l(y,\hat{y}) = \frac{1}{2}(y-\hat{y})^2$. As in the case of the hinge loss, the minimization of Eq. (\ref{eq:first}) is a convex problem. 
 However it is now a ridge regression problem, whose unique solution can be found in closed form as
 \begin{align}
 \begin{cases}
@@ -47,8 +47,6 @@ U = &\frac{1}{n}XX^T-\mu\mu^T\\
 &+\frac{\theta}{\theta+1}(x_0-\mu)(x_0-\mu)^T+\lambda\mathrm{Id}_d. \label{eq:U}
 \end{cases}
 \end{align}
-Equation (\ref{omega:solution}) shows how to solve (\ref{eq:first}) simultaneously for all individual exemplars.
-\cite{lssvm}
 %Replacing the hinge loss by the square loss offers a more compact solution, but not necessarily more efficient.
 
 \textbf{Woodbury identity.} 
@@ -68,6 +66,8 @@ Substituting (\ref{invU}) in (\ref{omega:solution}) yields
 \end{equation}
 
 Note that the positive sample weight $\theta$ does not influence the direction of the optimal vector $\omega^\star$, only its norm. This means that if search and ranking are based on the normalized feature $\frac{1}{\|\omega^\star\|}\omega^\star$, \eg using cosine similarity, $\theta$ does not influence the matching score of the SLEM vectors of two different images. This sets SLEM appart from ESVM which requires this parameter to be calibrated \cite{Efros11,ZePe15}. We can thus set $\theta=\frac{1}{n}$ for the remaining of this work.
+
+%Equation (\ref{Wood:omega}) also shows how to solve (\ref{eq:first}) in closed form and, hence, simultaneously for all individual exemplars by solving a linear system~\cite{lssvm}. If $X_p$ is the matrix where every column represents one positive sample, we obtain their respective exemplar classifier by solving the system $A\Omega = \bar{X}_p$ in $\Omega$. Here, $\bar{X}_p$ denotes the $X_p$ centralized w.r.t. the negatives' mean. It 
 %The normalized exemplar classifier $\omega^\star$ is therefore a linear transformation of $x_0-\mu$.
 %Indeed, if $\omega$ and $\omega'$ are the $d$-dimensional SLEM vectors of $x$ and $x'$, respectively, their cosine similarity reads:
 %we can denote $s$ the matching score scalar function defined in $\RR^d\times \RR^d$, which is given by
@@ -79,8 +79,8 @@ Note that the positive sample weight $\theta$ does not influence the direction o
 
 \subsection{LDA and SLEM}\label{sec:lda}
 
-It is interesting to note the relationship between SLEM and the classical linear discriminant analisys (LDA).
-Let us return to Eq. (\ref{eq:first}) an suppose that we have multiple positive samples. It can be shown that in this case, the corresponding linear classifier of Eq. (\ref{eq:first}) for the square loss is also given by
+It is interesting to note the relationship between SLEM and the classical linear discriminant analysis (LDA).
+Let us return to Eq. (\ref{eq:first}) an suppose that we have multiple positive samples. It can be shown that in this case, the corresponding linear classifier of Eq. (\ref{eq:first}) for the square-loss is also given by
 (\ref{omega:solution}), where $x_0$ denotes this time the center of mass
 of the positive samples {\em if} these samples have the {\em same} covariance matrix $\Sigma$ as the negative samples $X$.
  
@@ -90,11 +90,11 @@ $\RR^d$, and
 \left\{\begin{array}{l}
 \displaystyle \omega_{LDA}=\Sigma^{-1}(x_0-\mu),\\
 \displaystyle \nu_{LDA}=-\frac{1}{2}(x_0+\mu)^T \omega_{LDA}.
-\end{array}\right.
+\end{array}\right
 \label{eq:lda}
 \end{equation}
  
-This shows that SLEM is a generalized version of LDA: Indeed, when $\lambda=0$ in SLEM (\ie, no regularization), $A = \Sigma$, the vectors $\omega_{LDA}$ of Eq. (\ref{eq:lda}) and $\omega^\star$ of Eq. (\ref{Wood:omega}) have the same direction.
+This shows that SLEM is a generalized version of LDA: Indeed, taking $\lambda=0$ (\ie no regularization), $A = \Sigma$ and the vectors $\omega_{LDA}$ of Eq. (\ref{eq:lda}) and $\omega^\star$ of Eq. (\ref{Wood:omega}) have the same direction, reducing SLEM to LDA.
 %This observation has been equally made by \cite{Koba15}.
 Many interesting properties of LDA have been used recently for classification tasks \cite{GMPD12,HMR12} and, more recently, for image retrieval with convolutional neural network activations \cite{babenko15}.
 With our simple generalization of LDA, we hope to obtain superior results.
