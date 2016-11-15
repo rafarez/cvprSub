@@ -52,15 +52,17 @@ Using this factorization, the kernelized problem can be expressed as
 \min_{\beta\in\RR^r,\nu\in\RR} \left( \dfrac{1}{n}\sumi l(y_i, b_i^T\beta+\nu)+\dfrac{\lambda}{2}\|\beta\|^2\right), \label{beta:first}
 \end{equation}
 where $b_i^T$ denotes the $i$-th row of $B$ and $r$ is the number of columns of $B$. 
-If $(\beta^\star, \nu^\star)$ is the solution of (\ref{beta:first}), the corresponding vector $\alpha^\star$ (or, more correctly, \textit{a} corresponding vector of dimension $n\geq r$) 
+If $(\beta^\star, \nu^\star)$ is the solution of Eq. (\ref{beta:first}), the corresponding vector $\alpha^\star$ (or, more correctly, \textit{a} corresponding vector of dimension $n\geq r$) 
 can be computed by $\alpha^\star=P\beta^\star$, where $P$ is the pseudoinverse of $B^T$.
 
-Note that Eq. (\ref{beta:first}) allows us to write the kernel learning problem (\ref{ker:aff}) as an instance of Eq. (\ref{eq:first}) by setting $y_i=-1$ for all but one training sample. For our approach, we wish to solve (\ref{beta:first}) for many positive training samples (one at a time) against the same set of negative training samples. In the following subsections, we show how to take advantage of the fixed negative samples to efficiently solve (\ref{beta:first}).
+Note that Eq. (\ref{beta:first}) is written as the usual form of a linear classifier. In particular, it allows us to write the kernel learning problem (\ref{ker:aff}) as an instance of Eq. (\ref{eq:first}) by setting $y_i=-1$ for all but one training sample. For our approach, we wish to solve (\ref{beta:first}) for many positive training samples (one at a time) against the same set of negative training samples. In the following subsections, we show how to take advantage of the fixed negative samples to efficiently solve (\ref{beta:first}).
 
-\subsection{Offline preprocess of negative samples}\label{offline}
+\subsection{Offline preprocessing of negative samples}\label{offline}
+Let us now return to the (kernelized) SLEM with $l$ as the square-loss.
 In order to calculate offline all operations that are dependent only on negative samples, let us suppose that the positive training sample is unknown and $K$ is the kernel matrix of the negative samples $X$.
 The preprocessing phase consists of the calculation of the decomposition $B$ and the constants of Eq. (\ref{Wood:omega}): $\mu = \frac{1}{n}\sum_{i=1}^n b_i^T$ and $A = \frac{1}{n}B^TB-\mu\mu^T +\lambda\mathrm{Id}_r.$
-These operations are done offline and their results are stored. In the processing of positive samples, \emph{i.e.} the online phase, these results are loaded.
+These operations are done offline and their results are stored. 
+%In the processing of positive samples, \emph{i.e.} the online phase, these results are loaded.
 %Equation (\ref{beta:first}) has the same structure of Eq. (\ref{eq:first}) if we were to consider $\theta=0$ and all labels $y_i=-1$.
 
 \subsection{Online addition of a positive sample}
@@ -119,18 +121,19 @@ This lemma allows us to add a positive sample to Eq. (\ref{beta:first}).
 %$\beta^\star(x_0,X), \nu^\star(x_0,X) = \underset{\beta\in\RR^{r+1}, \nu\in\RR}{argmin}J'(\beta, \nu)$, for
 With a positive exemplar, Eq. (\ref{beta:first}) now reads
 \begin{align}
- \dfrac{1}{n}l(1, b_0'^T\beta+\nu) +\dfrac{1}{n}\sumi l(-1,b_i'^T\beta+\nu)
+ \dfrac{1}{n}(b_0'^T\beta+\nu - 1)^2 +\dfrac{1}{n}\sumi (b_i'^T\beta+\nu + 1)^2
 +\dfrac{\lambda}{2}\|\beta\|^2,\label{beta:final}
 \end{align}
-with $b_i'^T$ being the $(i+1)$-th row of $B'$, $i$ in $\{0,1,...,n\}$. In particular, $b_0'=[u; \ v]$ and, for $i>0$, $b_i'=[0; \ b_i]$. The solution $(\beta^\star,\nu^\star)$ in $\RR^{r+1}\times\RR$ can be computed just as before by Equation (\ref{omega:solution}), replacing $x_0$ by $b_0'$, $\mu$ by $\mu' = \frac{1}{n}\sum_{i=1}^n b_i'$ and $X$ by the $(r+1)\times n$ matrix $Q$ of columns $b_1', b_2',...,b_n'$. Solution $\alpha^\star$ is now calculated as
+with $b_i'^T$ being the $(i+1)$-th row of $B'$, $i$ in $\{0,1,...,n\}$. In particular, $b_0'=[u; \ v]$ and, for $i>0$, $b_i'=[0; \ b_i]$. The solution $(\beta^\star,\nu^\star)$ in $\RR^{r+1}\times\RR$ can be computed just as before by Eq. (\ref{omega:solution}), replacing $x_0$ by $b_0'$, $\mu$ by $\mu' = \frac{1}{n}\sum_{i=1}^n b_i'$ and $X$ by the $(r+1)\times n$ matrix $Q$ of columns $b_1', b_2',...,b_n'$. The solution $\alpha^\star$ is now calculated as
 $\alpha^\star=P'\beta^\star$, where $P' = [u^{-1} \ 0^T; -u^{-1}Pv \ P]$ is the pseudoinverse of $B'^T$. 
 %This can be expressed by the linear system
 
 
 \subsection{Similarity score}\label{simi_score}
+%It is important to note that the exemplar classifier $h$ is never explicitly calculated, but we are able to compute the similarity between a pair of exemplar classifiers regardless.
 Once the optimal parameters $(\beta, \nu)$ from (\ref{beta:final}) and the coordinates $u$, $v$ of $b_0'$ from (\ref{eq:lemma1}) have been found\footnote{We drop the ``$\star$'' in this subsection to avoid cluttering the notation.}, they can be used directly for measuring similarity between matching images.
 
-Indeed, suppose two image descriptors $x_0$ and $x_0'$ are given and we wish to calculate the similarity score between theirs SLEM representations $h$ and $h'$, denoted by $s(h,h')$. 
+Suppose two image descriptors $x_0$ and $x_0'$ are given and we wish to calculate the similarity score between theirs SLEM representations $h$ and $h'$, denoted by $s(h,h')$. 
 We write $h'=\alpha_0'\varphi(x_0')+\sum_{i=1}^n \alpha_i'\varphi (x_i)+\nu'$. 
 Moreover, $\alpha$ can be expressed by the linear system
 \begin{equation}
@@ -147,7 +150,7 @@ s(h,h') & = \langle h, h'\rangle \\
 \end{split}
 \end{equation}
 
-For a given image whose descriptor is $x_0$, we need to store $x_0$, $\hat{\beta}$ and $v$ to calculate its matching score to whichever other image for SLEM. Each image depends therefore on a vector of $p+2r$ dimensions \PP{Remind what are $p$ and $r$, I lost the former!}.
+For a given image whose descriptor is $x_0$, we need to store $x_0$, $\hat{\beta}$ and $v$ to calculate its similarity score to whichever other image for SLEM. Since we assume the base feature $x_0$ has dimension $p$ and $\hat{\beta}$ and $v$ each have dimension $r$, we store a vector of dimension $p+2r$ for each image.
 
 %%% Local Variables:
 %%% TeX-master: "main_eccv"
