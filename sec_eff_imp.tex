@@ -10,22 +10,26 @@ This factorization can be obtained in two fundamental ways: full-rank and low-ra
 
 \subsection{Full-rank decomposition}
 The complete Cholesky decomposition (CCD) is the most used factorization of positive-definite matrices in kernel-based learning due to its time efficiency \cite{BaJo02}. We use it as our default decomposition.
-We make sure $K$ is positive-definite by adding $\epsilon$ to its diagonal, where $\epsilon=\min(0,-\lambda_{min})$ and $\lambda_{min}$ is the smallest eigenvalue of $K$. Therefore, from the equation $BB^T=K+\epsilon\mathrm{Id}_n$, $B$ has rank $n$ and can be obtained by CCD.
+We make sure $K$ is positive-definite by adding $\epsilon$ to its diagonal, where $\epsilon=\min(0,-\lambda_{min})$ and $\lambda_{min}$ is the smallest eigenvalue of $K$. Therefore, from the equation $BB^T=K+\epsilon\mathrm{Id}_n$, $B$ has rank $n$ and can be calculated by CCD.
 
 \subsection{Low-rank decomposition}
 Let us now turn to the problem of improving storage efficiency. One of the major requisites of a global image descriptor for large scale retrieval is to minimize the storage.
-As discussed in Section \ref{simi_score}, for each positive exemplar we store its base feature plus a $2r$ vector. Hence, we aim to decompose $K$ at a small rank $r$.
-We consider the problem of finding a factor $B$ of fixed rank $r$ such that the residue $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$ is small. \hlc{I wanted to write "factor $B$ of fixed rank $r$ that minimizes the residue $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$", but I don't want to propose it as an optimization problem. The "such that the residue is small" is not perfect, but it is the best I could find. Any proposition?}
+As discussed in Section \ref{simi_score}, for each positive exemplar we store its base representation plus a $2r$ vector. Hence, we aim to decompose $K$ at a small rank $r$.
+We consider the problem of finding a factor $B$ of fixed rank $r$ such that the residue. We propose two methods of decomposition. $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$ is small. \hlc{I wanted to write "factor $B$ of fixed rank $r$ that minimizes the residue $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$", but I don't want to propose it as an optimization problem. The "such that the residue is small" is not perfect, but it is the best I could find. Any proposition?}
 
-The incomplete Cholesky decomposition (ICD) is widely used in machine learning~\cite{BaJo02,BaJo05,FiSc01}. Its algorithm is similar to CCD, and it greedily chooses which column of $K$ to add to the decomposition based on the gain in approximation error for all non-added columns. This process is called \emph{pivot selection}~\cite{BaJo05}. We stop the algorithm $r$ steps, obtaining the factor $B$ in time $O(nr^2)$.
+\textbf{ICD} The incomplete Cholesky decomposition (ICD) is widely used in machine learning~\cite{BaJo02,BaJo05,FiSc01}. Its algorithm is similar to CCD, and it greedily chooses which column of $K$ to add to the decomposition based on the gain in approximation error for all non-added columns. This process is called \emph{pivot selection}~\cite{BaJo05}. We stop the algorithm $r$ steps, obtaining the factor $B$ in time $O(nr^2)$.
 
-The kernel PCA (KPCA) proposes that, instead of a greedy addition of columns, we choose the $r$ first eigenvectors. This is done by doing a truncated singular value decomposition of $K$:
+\textbf{KPCA} The kernel PCA (KPCA) proposes that, instead of a greedy addition of columns, we choose the $r$ first eigenvectors to form the $r$ columns of $B$. This is done by doing a truncated singular value decomposition of $K$:
 \begin{equation}
     K = WDW^T; \ b_i = \sqrt{d_{ii}}w_i, \label{svd}
 \end{equation}
-where $w_i$ denotes the $i$-th column of $W$ and $d_{ii}$ the $i$-th diagonal element of $D$. Decomposing $K$ from Equation~(\ref{svd}) has complexity $O(n^2r)$ in time.~\cite{golub2012matrix}
+where $w_i$ denotes the $i$-th column of $W$ (\ie the $i$-th eigenvector of $K$) and $d_{ii}$ the $i$-th diagonal element of $D$ (\ie the $i$-th eigenvalue of $K$). Decomposing $K$ from Eq.~(\ref{svd}) has complexity $O(n^2r)$ in time.~\cite{golub2012matrix}
 
-We plot in Fig. \ref{fig:residue} the ratio $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$ when we vary the number of columns $r$ of $B$ and we see a faster convergence for the kernel PCA decomposition when $r$ goes to $n$.
+We plot in Fig. \ref{fig:residue} the residue $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$ when we vary the number of columns $r$ of $B$ and we see a faster convergence for the kernel PCA decomposition when $r$ goes to $n$. Figure \ref{kpca:icd} shows an accuracy comparison between the two decompositions, confirming that KPCA gives a better approximation of the full-rank decomposition.
+
+\input{fig_KPCAvsICD.tex}
+
+We also compare the time of calculation in Fig. \ref{fig:residue}, which shows that KPCA is slower than ICD for small values of $r$ and faster for values of $r$ such that the residue is small.
 \hlc{I could not finish the discussion in this section, I need some sleep...}
 
 %The incomplete Cholesky decomposition (ICD) is the most used factorization of positive-semidefinite matrices in kernel-based learning due to its time efficiency \cite{BaJo02,BaJo05,FiSc01}. The computation of the factor $B$ depends on a permutation $\pi(n) =\{i_1,i_2,\dots,i_n\}$ of $\{1,2,\dots, n\}$, called \textit{pivots}. The $t$-th column of $B$ is calculated iteratively as:
@@ -51,5 +55,6 @@ We plot in Fig. \ref{fig:residue} the ratio $\mathrm{tr}(K-BB^T)/\mathrm{tr}(K)$
 %\subsection{Storage-efficient implementation}\label{low-rank} %/Low-rank decomposition} 
 %Let us now consider instead the problem of improving storage efficiency. As discussed in section \ref{simi_score}, for each positive exemplar we store its original encoding plus a $2r$ vector, so we aim to decompose $K$ at a small rank $r$.
 %For small values of $r$, a kernel PCA (KPCA) factorization guarantees a better approximation of $K$ than the Cholesky decomposition at a higher time cost. Indeed, as illustrated in Figure \ref{fig:residue}, a kernel PCA gives smaller residues than ICD at small rank. 
+
 
 
