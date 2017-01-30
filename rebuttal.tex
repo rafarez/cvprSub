@@ -1,0 +1,116 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage{ruler}
+\usepackage{color}
+\usepackage{booktabs}
+%\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NNN}{\mathcal N}
+\newcommand{\sumi}{\displaystyle{\sum_{i=1}^n}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Highlighting
+\usepackage{soul}
+%\usepackage[usenames,dvipsnames]{xcolor}
+\newcommand{\hlc}[2][yellow]{{\sethlcolor{#1}\hl{#2}}}
+\newcommand{\RAF}[1]{\hlc[yellow]{(RR:) #1}}
+\newcommand{\JZ}[1]{\hlc[pink]{(JZ:) #1}}
+\newcommand{\PP}[1]{\hlc[green]{PP: #1}}
+\newcommand{\un}[1]{\underline{#1}}
+\def\dul#1{\underline{\underline{#1}}}
+
+\usepackage{tikz}
+\usepackage{pgfplots,pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{grid=major,height=2in, width=\columnwidth}
+\input{tikz_styles.tex}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{882} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Kernel Square-Loss Exemplar Machines for Image Retrieval: Rebuttal}
+
+\author{Rafael Rezende\\
+INRIA Paris\\
+Institution1 address\\
+{\tt\small rafael.sampaio_de_rezende@inria.fr}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
+}
+\maketitle
+
+%\date{}
+
+We thank the reviewers for their constructive comments and we address their concerns below.
+
+\section{R1} The comments are mostly positive. 
+
+\noindent{\em - ESVM and linear SLEM.} We wish to note that the original ESVM method for retrieval only outperforms the linear version of the proposed SLEM algorithm for SPOC features and the Holidays datasets. For all other features and datasets the linear SLEM does as well or better, and is of course much faster than the ESVM.
+
+\noindent{\em - Computational cost of kernel SLEMs.} The high computational cost of kernelized SLEMs is decreased by the low-rank decompositions we presented. Table 2 shown around 0.5$\%$ improvement (significant for this performance zone) between the linear SLEM and 32-rank decomposition for Poly SLEM with NetVLAD-512 and NetVLAD-4096 on Holidays.
+
+\section{R3} We answer below the questions of R3.
+
+\noindent{\em - Question 1: main novelty.} We believe that the main novelty of the paper is two-fold: (1) using the square loss, which avoids retraining for each additional positive training example ; (2) kernelizing the method while keeping a reasonable memory footprint through the use of low-rank approximations. Similar ideas have of course been used in other contexts in machine learning \cite{BaJo02,FiSc01}, as already mentioned in the paper.  As pointed out by the reviewer, processing the data offline before adding one extra sample has also been used before for efficient cross-validation of residual error (we will add a reference if the paper is accepted). Our work is, however, to our knowledge, the first to apply these ideas to examplar-based classifiers, in particular in the context of image retrieval, and this results in a high-accuracy, efficient method for image retrieval. An additional (if minor) advantage of our approach compared to the original ESVM approach  to image retrieval of \cite{ZePe15}  is that it does not require the calibration of the $\theta$ parameter.
+
+\noindent{\em - Question 2.} We do not have a well-justified explanation (yet) as to why our linear SLEM performs significantly better than the NetVLAD baseline in our experiments, although we suspect, like the reviewer, that it is a mixture of loss function and training data from the negative set. The code for the cited features is, as far as we know, not available publicly, which has prevented us from running experiments with them.
+
+\noindent{\em - Question 3: why use kernel SLEM in practice.}  It is clearly true that linear SLEMs perform as well as kernelized ones for some features and datasets (e.g., VLAD, AlexNet and NetVLAD for Holidays, or VLAD and SPoC for Oxford5K), where it makes more sense to use linear SLEM. For some features and datasets, there is, however, a significant difference in performance, for example SPoC for Holidays (4$\%$ difference between linear and full-rank Gaussian or Poly SLEM), or SPoC ans NetVLAD features for Oxford105K (respectively almost 6$\%$ and over 2$\%$ between linear and Poly SLEMs). As shown in Table 1 of the supplementary material, increasing the rank of the approximation to 1024 improves accuracy within 1$\%$ of less of the full-rank method for NetVLAD and Poly SLEM for both Holidays and Oxford5K while keeping a reasonable memory footprint. To confirm this was true more generally, we have run additional experiments with Oxford105K, achieving performance within 1.5$\%$ of the full-rank method with a rank of 1024.
+
+\section{R4} We address below the main concerns of R4.
+
+\noindent{\em - Clarify claims.} We will indeed improve the presentation of the paper
+and its claims, following our response to Question 1 of R3 above and reorganizing the Introduction.
+
+\noindent{\em - Remove KPCA vs ICD discussion.} We agree these results are well know, in particular in the machine learnng community. We will remove the figure and
+only keep a brief discussion of the issue since we believe it may be useful to
+computer vision researchers.
+
+\noindent{\em - Typos.} We will correct all typos in Lemma 1 and Eq. (16) and move Eq. (15) to section 3.3.
+
+\noindent{\em - "LDA, ESVM and Linear SLEM".} We will correct the sentence, which should have said "PCAW, LDA and ESVM".
+
+
+
+\bibliographystyle{plain}
+\bibliography{sup,jz}
+\end{document}
